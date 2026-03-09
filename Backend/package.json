@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node --watch --import ./register.mjs src/index.ts",
+    "dev": "node --watch --import tsx/esm src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js"
   },
@@ -24,13 +24,13 @@
   },
   "devDependencies": {
     "@swc-node/register": "^1.11.1",
-    "@swc/core": "^1.15.18",
     "@types/koa": "^3.0.1",
     "@types/koa__cors": "^5.0.1",
     "@types/koa-bodyparser": "^4.3.13",
     "@types/node": "^25.3.5",
     "@types/pg": "^8.18.0",
     "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
 }

@@ -3,11 +3,15 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  OneToMany,
+  UpdateDateColumn,
+  Relation,
 } from "typeorm";
 import { userRole, userStatus } from "../types/global.types.js";
+import  { Product } from "./Product.js";
 
 @Entity()
-export class Users {
+export class User {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
@@ -39,8 +43,12 @@ export class Users {
   })
   otpExpires!: Date;
 
-  @CreateDateColumn({ type: "timestamptz", name: "created_at" })
+  // relation with product table
+  @OneToMany(()=>Product,(product)=>product.seller)
+  products!: Relation<Product[]>;
+
+  @CreateDateColumn({ type: "timestamptz", name: "created_at", default: () => "CURRENT_TIMESTAMP" })
   createdAt!: Date;
-  @CreateDateColumn({ type: "timestamptz", name: "updated_at" })
+  @UpdateDateColumn({ type: "timestamptz", name: "updated_at",default: () => "CURRENT_TIMESTAMP" })
   updated!: Date;
 }

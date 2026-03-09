@@ -1,8 +1,9 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
 import env from "../lib/env.js"
-import { Users } from "../entity/User.js"
-import { Test } from "../entity/Test.js"
+import { User } from "../entity/User.js"
+import { Product } from "../entity/Product.js"
+import { ProductImage } from "../entity/ProductImage.js"
 
 
 export const AppDataSource = new DataSource({
@@ -10,7 +11,7 @@ export const AppDataSource = new DataSource({
     url:env.DATABASE_URL,
     synchronize: true,
     logging: false,
-    entities: [Test],
+    entities: [User, Product, ProductImage],
     migrations: [],
     subscribers: [],
 })

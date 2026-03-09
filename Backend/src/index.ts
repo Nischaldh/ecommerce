@@ -1,10 +1,7 @@
 import "reflect-metadata";
 import Koa from "koa";
-import type {Context} from "koa";
-import Router from "@koa/router";
 import env from "./lib/env.js";
 import { AppDataSource } from "./config/data-source.js";
-import { Test } from "./entity/Test.js";
 import router from "./router/routes.js";
 import logger from "./middleware/logger.js";
 import bodyParser from "koa-bodyparser";
