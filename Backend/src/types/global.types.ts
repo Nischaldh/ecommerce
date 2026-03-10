@@ -14,3 +14,13 @@ export enum userStatus {
     VERIFIED = "verified",
     NOT_VERIFIED = "not_verified"
 }
+
+export type JwtPayload = {
+    userId: string;
+    email: string;
+    role: userRole;
+}
+
+export type successResponse ={
+    success:boolean;
+}

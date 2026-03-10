@@ -1,10 +1,13 @@
 import Router from "@koa/router";
-import { logIn, signIn } from "../controller/auth.controller.js";
+import { generateOtp, logIn, resetPassword, signUp, verifyUser } from "../controller/auth.controller.js";
 
 
 const authRouter = new Router({prefix:"/auth"});
 
 authRouter.post("/login", logIn);
-authRouter.post("/signin", signIn);
+authRouter.post("/signup", signUp);
+authRouter.post("/otp/generate",generateOtp);
+authRouter.post("/user/verify",verifyUser);
+authRouter.post("/password/reset",resetPassword);
 
 export default authRouter;

@@ -20,7 +20,7 @@ app.use(cors({
 
 
 // middleware
-app.use(bodyParser);
+app.use(bodyParser());
 app.use(errorHandlerMiddleware);
 app.use(logger);
 
