@@ -85,10 +85,11 @@ export const signUpService = async (
     password: hashedPassword,
     role,
   });
-  const savedUser = await userRepository.save(newUser);
-  await generateOtpService({email});
+  await userRepository.save(newUser);
+  await generateOtpService({ email });
   return {
     success: true,
+    message: "User registered successfully. Please verify your email.",
   };
 };
 
@@ -104,24 +105,27 @@ export const generateOtpService = async (validatedData: {
   user.otpExpires = new Date(Date.now() + 10 * 60 * 1000);
 
   await userRepository.save(user);
-  await transporter.sendMail({
+  const result = await transporter.sendMail({
     to: email,
     subject: "Verification OTP",
     text: `Your OTP is ${otp}. It will expire in 10 minutes.`,
   });
+  if (!result.accepted.length) {
+    throw new Error("Failed to send OTP email. Please try again.");
+  }
   return {
     success: true,
+    message: "OTP sent to email if user exists",
   };
 };
 
 export const verifyOtpService = async (
   email: string,
-  reqOtp: string
+  reqOtp: string,
 ): Promise<{ success: boolean; user: User }> => {
-
   const user = await userRepository.findOne({
     where: { email },
-    select: ["id", "email", "otp", "otpExpires", "status"]
+    select: ["id", "email", "otp", "otpExpires", "status"],
   });
 
   if (!user) throw new NotFoundError("User not found");
@@ -139,10 +143,11 @@ export const verifyOtpService = async (
   return { success: true, user };
 };
 
-export const resetPasswordService = async (
-  validatedData: { email: string; newPassword: string; otp: string }
-): Promise<successResponse> => {
-
+export const resetPasswordService = async (validatedData: {
+  email: string;
+  newPassword: string;
+  otp: string;
+}): Promise<successResponse> => {
   const { email, newPassword, otp } = validatedData;
 
   const { user } = await verifyOtpService(email, otp);
@@ -155,14 +160,13 @@ export const resetPasswordService = async (
 
   await userRepository.save(user);
 
-  return { success: true };
+  return { success: true, message: "Password reset successfully." };
 };
 
 export const verifyUserService = async (validatedData: {
   email: string;
   otp: string;
 }): Promise<IAuthResponse> => {
-
   const { email, otp } = validatedData;
 
   const { user } = await verifyOtpService(email, otp);
@@ -186,5 +190,5 @@ export const verifyUserService = async (validatedData: {
     email: user!.email,
     role: user!.role as userRole,
   });
-  return { user:newUser, token };
+  return { user: newUser, token };
 };

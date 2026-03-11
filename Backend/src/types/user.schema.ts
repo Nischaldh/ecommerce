@@ -18,3 +18,11 @@ export interface OtpValidation{
     otp:string|null,
     otpExpires:Date|null,
 }
+
+export interface UpdateProfileInput {
+  name?: string;
+  currentPassword?: string;
+  newPassword?: string;
+  confirmNewPassword?:string,
+  newEmail?: string;
+}

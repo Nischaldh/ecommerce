@@ -23,4 +23,5 @@ export type JwtPayload = {
 
 export type successResponse ={
     success:boolean;
+    message:string,
 }

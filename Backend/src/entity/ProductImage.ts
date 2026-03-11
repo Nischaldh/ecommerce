@@ -21,7 +21,7 @@ export class ProductImage {
   @Column({ type: "uuid" })
   product_id!: string;
 
-  @ManyToOne(() => Product, (product) => product.images)
+  @ManyToOne(() => Product, (product) => product.images,{onDelete:"CASCADE"})
   @JoinColumn({ name: "product_id" })
   product!: Relation<Product>;
 

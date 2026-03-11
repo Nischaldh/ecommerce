@@ -7,6 +7,9 @@ type envSchema= {
   DUMMY_HASH: string;
   EMAIL:string;
   EMAIL_PASSWORD: string;
+  CLOUD_NAME:string;
+  CLOUD_API_KEY:string;
+  CLOUD_API_SECRET:string;
 };
 
 const env : envSchema= {
@@ -18,6 +21,9 @@ const env : envSchema= {
     "$2a$10$SJJ.YGj2U07QoPOSjI6L/uZObuZPdRys54VpgMk9da2ml7DlM2evu",
     EMAIL: process.env.EMAIL || "",
     EMAIL_PASSWORD: process.env.EMAIL_PASSWORD || "",
+    CLOUD_NAME: process.env.CLOUDINARY_NAME || "",
+    CLOUD_API_KEY: process.env.CLOUDINARY_API_KEY || "",
+    CLOUD_API_SECRET: process.env.CLOUDINARY_SECRET_KEY || "",
 };
 
 export default env;

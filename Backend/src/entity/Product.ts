@@ -34,6 +34,10 @@ export class Product {
   @Column({ type: "boolean", default: false })
   deleted!: boolean;
 
+  @Column({ type: "text", name: "primary_image" })
+  primaryImage!: string;
+
+
   @OneToMany(() => ProductImage, (img) => img.product)
   images!: Relation<ProductImage[]>;
 
