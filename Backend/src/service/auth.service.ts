@@ -55,10 +55,11 @@ export const loginService = async (
     updatedAt: response.updatedAt,
   };
   const token = generateToken({
-    userId: user!.id,
+    id: user!.id,
     email: user!.email,
     role: user!.role as userRole,
   });
+  console.log("Login Service - User:", user); // Debug log
   return { user, token };
 };
 
@@ -185,8 +186,9 @@ export const verifyUserService = async (validatedData: {
     createdAt: response.createdAt,
     updatedAt: response.updatedAt,
   };
+  console.log(newUser);
   const token = generateToken({
-    userId: user!.id,
+    id: user!.id,
     email: user!.email,
     role: user!.role as userRole,
   });

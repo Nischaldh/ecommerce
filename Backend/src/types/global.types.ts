@@ -16,7 +16,7 @@ export enum userStatus {
 }
 
 export type JwtPayload = {
-    userId: string;
+    id: string;
     email: string;
     role: userRole;
 }

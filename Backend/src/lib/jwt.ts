@@ -9,7 +9,7 @@ import env from "./env.js";
 
 export const generateToken = (user:JwtPayload)=>{
     return jwt.sign({
-        id:user.userId,
+        id:user.id,
         email:user.email,
         role:user.role
     },

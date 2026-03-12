@@ -6,13 +6,11 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  
   Relation,
-  
   UpdateDateColumn,
 } from "typeorm";
-import   { User } from "./User.js";
-import  { ProductImage } from "./ProductImage.js";
+import { User } from "./User.js";
+import { ProductImage } from "./ProductImage.js";
 
 @Entity()
 export class Product {
@@ -22,7 +20,15 @@ export class Product {
   @Column({ type: "text" })
   name!: string;
 
-  @Column({ type: "decimal" })
+  @Column({
+    type: "decimal",
+    precision: 10,
+    scale: 2,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => parseFloat(value),
+    },
+  })
   price!: number;
 
   @Column({ type: "text" })
@@ -37,7 +43,6 @@ export class Product {
   @Column({ type: "text", name: "primary_image" })
   primaryImage!: string;
 
-
   @OneToMany(() => ProductImage, (img) => img.product)
   images!: Relation<ProductImage[]>;
 
@@ -48,9 +53,17 @@ export class Product {
   @JoinColumn({ name: "seller_id" })
   seller!: Relation<User>;
 
-  @CreateDateColumn({ type: "timestamp",name: "created_at", default: () => "CURRENT_TIMESTAMP" })
+  @CreateDateColumn({
+    type: "timestamp",
+    name: "created_at",
+    default: () => "CURRENT_TIMESTAMP",
+  })
   createdAt!: Date;
 
-  @UpdateDateColumn({ type: "timestamp",name: "updated_at", default: () => "CURRENT_TIMESTAMP" })
+  @UpdateDateColumn({
+    type: "timestamp",
+    name: "updated_at",
+    default: () => "CURRENT_TIMESTAMP",
+  })
   updatedAt!: Date;
 }

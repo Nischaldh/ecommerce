@@ -3,7 +3,7 @@ import { updateProfile, uploadProfilePic, verifyEmailChange } from "../controlle
 import { uploadSingleImage } from "../middleware/upload.middleware.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
 
-const userRouter = new Router({ prefix: "/user" });
+const userRouter = new Router({ prefix: "/users" });
 
 /**
  * Todo

@@ -13,13 +13,13 @@ export interface IAuthResponse{
     token:string
 }
 
-export interface OtpValidation{
+export type OtpValidation={
     reqOtp:string,
     otp:string|null,
     otpExpires:Date|null,
 }
 
-export interface UpdateProfileInput {
+export type UpdateProfileInput = {
   name?: string;
   currentPassword?: string;
   newPassword?: string;
