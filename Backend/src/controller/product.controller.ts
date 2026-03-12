@@ -1,34 +1,43 @@
 import type { Context } from "koa";
-import { productValidation } from "../validations/product.validation.js";
+import { getProductParamValidation, getProductsValidation, productValidation } from "../validations/product.validation.js";
 import { BadRequestError } from "../lib/erros.js";
 import { uploadToCloudinary } from "../lib/cloudinaryUpload.js";
-import { createProductService } from "../service/product.service.js";
+import { createProductService,  getAProductService,  getProductsService } from "../service/product.service.js";
 
 export const getAllProduct = async (ctx: Context) => {
+  const validatedQuery = await getProductsValidation.validate(ctx.request.query);
+  const result = await getProductsService(validatedQuery);
   ctx.status = 200;
   ctx.body = {
-    message: "Successfully",
+    success: true,
+    products: result.products,
+    total: result.total,
   };
 };
 
 export const getAProduct = async (ctx: Context) => {
+  const { id } = await getProductParamValidation.validate(ctx.params) as { id: string };
+  const product = await getAProductService(id);
   ctx.status = 200;
   ctx.body = {
-    message: "Successfully",
+    success: true,
+    product: product.product,
   };
 };
 
 export const editProduct = async (ctx: Context) => {
   ctx.status = 200;
   ctx.body = {
-    message: "Successfully",
+    success: true,
+    message: "Product updated successfully",
   };
 };
 
 export const deleteProduct = async (ctx: Context) => {
   ctx.status = 200;
   ctx.body = {
-    message: "Successfully",
+    success: true,
+    message: "Product deleted successfully",
   };
 };
 

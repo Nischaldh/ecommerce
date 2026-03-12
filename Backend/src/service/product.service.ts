@@ -2,12 +2,13 @@ import { AppDataSource } from "../config/data-source.js";
 import { Product } from "../entity/Product.js";
 import { ProductImage } from "../entity/ProductImage.js";
 import { NotFoundError } from "../lib/erros.js";
+import { mapProduct } from "../lib/utlis.js";
+import { queryType } from "../types/global.types.js";
 import {
   ICreateProduct,
-  IExtendedProduct,
-  IProduct,
   IProductResponse,
 } from "../types/product.schema.js";
+import { productValidation } from "../validations/product.validation.js";
 
 const productRepository = AppDataSource.getRepository(Product);
 const productImageRepository = AppDataSource.getRepository(ProductImage);
@@ -57,22 +58,58 @@ export const createProductService = async (
       },
     },
   });
-  console.log("Full Product from DB:", fullProduct); // Debug log
   if (!fullProduct) {
     throw new NotFoundError(
       "Product not found after creation, something went wrong.",
     );
   }
-  const fullProductWithMappedImages: IProductResponse = {
-    ...fullProduct,
-    images: fullProduct.images.map((img) => ({
-      id: img.id,
-      url: img.img_url, 
-    })),
-    seller: {
-      id: fullProduct.seller.id,
-      name: fullProduct.seller.name,
-    },
+  return { product: mapProduct(fullProduct), success: true };
+};
+
+
+export const getProductsService = async (query: queryType): Promise<{ products: IProductResponse[]; total: number }> => {
+  const { name, category, minPrice, maxPrice, page = 1, pageSize = 10 } = query;
+  const skip = (page - 1) * pageSize;
+    const qb = productRepository
+    .createQueryBuilder("product")
+    .leftJoinAndSelect("product.seller", "seller")
+    .leftJoinAndSelect("product.images", "images")
+    .where("product.deleted = :deleted", { deleted: false });
+
+  if (name) qb.andWhere("product.name ILIKE :name", { name: `%${name}%` });
+  if (category) qb.andWhere("product.category = :category", { category });
+  if (minPrice) qb.andWhere("product.price >= :minPrice", { minPrice });
+  if (maxPrice) qb.andWhere("product.price <= :maxPrice", { maxPrice });
+
+  const total = await qb.getCount();
+
+
+  const products = await qb
+    .orderBy("product.createdAt", "DESC")
+    .skip(skip)
+    .take(pageSize)
+    .getMany();
+
+  return { products: products.map(mapProduct), total };
+
+
+}
+
+export const getAProductService = async (
+  id: string,
+): Promise<{ product: IProductResponse; success: boolean }> => {
+
+  const product = await productRepository.findOne({
+    where: { id, deleted: false },
+    relations: ["images", "seller"],
+  });
+
+  if (!product) {
+    throw new NotFoundError("Product not found");
+  }
+
+  return {
+    product: mapProduct(product),
+    success: true,
   };
-  return { product: fullProductWithMappedImages, success: true };
 };

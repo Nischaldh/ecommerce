@@ -25,3 +25,13 @@ export type successResponse ={
     success:boolean;
     message:string,
 }
+
+
+export type queryType = {
+    name?: string;
+    category?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    page?: number;
+    pageSize?: number;
+}
