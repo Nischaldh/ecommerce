@@ -6,16 +6,20 @@ import { Product } from "../entity/Product.js";
 import { BadRequestError, ForbiddenError, NotFoundError } from "../lib/erros.js";
 import {
   ICreateOrder,
+  IDeliveryResponse,
   IOrderItemResponse,
   IOrderResponse,
+  IUpdateDelivery,
 } from "../types/order.schema.js";
-import { allowedTransitions, mapOrder, mapOrderItem } from "../lib/utlis.js";
+import { allowedTransitions, mapDelivery, mapOrder, mapOrderItem } from "../lib/utlis.js";
 import { OrderItem } from "../entity/OrderItems.js";
 import { OrderItemStatus, OrderStatus, PaymentStatus } from "../types/global.types.js";
+import { Delivery } from "../entity/Delivery.js";
 
 const orderRepository = AppDataSource.getRepository(Order);
 const orderItemRepository = AppDataSource.getRepository(OrderItem);
 const cartRepository = AppDataSource.getRepository(Cart);
+const deliveryRepository = AppDataSource.getRepository(Delivery);
 
 
 export const placeOrderService = async (
@@ -32,7 +36,6 @@ export const placeOrderService = async (
     throw new BadRequestError("Your cart is empty");
   }
 
-  // partial checkout — filter to selected items if provided
   const itemsToOrder = data.cartItemIds?.length
     ? cart.items.filter((i) => data.cartItemIds!.includes(i.id))
     : cart.items;
@@ -241,4 +244,42 @@ export const updateOrderItemStatusService = async (
 
   const saved = await orderItemRepository.save(item);
   return { item: mapOrderItem(saved) };
+};
+
+export const updateDeliveryService = async (
+  orderItemId: string,
+  sellerId: string,
+  data: IUpdateDelivery
+): Promise<{ delivery: IDeliveryResponse }> => {
+
+  // verify the order item belongs to this seller
+  const orderItem = await orderItemRepository.findOne({
+    where: { id: orderItemId, seller_id: sellerId },
+    relations: ["delivery"],
+  });
+
+  if (!orderItem) throw new NotFoundError("Order item not found");
+
+  if (orderItem.status === OrderItemStatus.PENDING) {
+    throw new BadRequestError(
+      "Cannot update delivery info before processing the order item"
+    );
+  }
+
+  if (orderItem.status === OrderItemStatus.CANCELLED) {
+    throw new BadRequestError("Cannot update delivery info for a cancelled item");
+  }
+
+  const delivery = orderItem.delivery;
+
+  if (!delivery) throw new NotFoundError("Delivery record not found");
+
+  Object.assign(delivery, data);
+
+  if (orderItem.status === OrderItemStatus.DELIVERED && !delivery.deliveredAt) {
+    delivery.deliveredAt = new Date();
+  }
+
+  const saved = await deliveryRepository.save(delivery);
+  return { delivery: mapDelivery(saved) };
 };

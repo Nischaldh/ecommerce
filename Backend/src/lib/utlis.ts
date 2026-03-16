@@ -1,10 +1,13 @@
 import { CartItem } from "../entity/CartItem.js";
+import { Delivery } from "../entity/Delivery.js";
 import { Order } from "../entity/Order.js";
 import { OrderItem } from "../entity/OrderItems.js";
 import { Product } from "../entity/Product.js";
+import { UserAddress } from "../entity/UserAddresses.js";
+import { IAddressResponse } from "../types/address.schema.js";
 import { ICartItemResponse } from "../types/cart.schema.js";
 import { OrderItemStatus } from "../types/global.types.js";
-import {  IOrderItemResponse, IOrderResponse } from "../types/order.schema.js";
+import {  IDeliveryResponse, IOrderItemResponse, IOrderResponse } from "../types/order.schema.js";
 import { IProductResponse } from "../types/product.schema.js";
 
 export const mapProduct = (product: Product): IProductResponse=> {
@@ -85,3 +88,32 @@ export const allowedTransitions: Record<OrderItemStatus, OrderItemStatus[]> = {
   [OrderItemStatus.CANCELLED]: [],
   [OrderItemStatus.REFUNDED]: [],
 };
+
+export const mapAddress = (address: UserAddress): IAddressResponse => ({
+  id: address.id,
+  user_id: address.user_id,
+  fullName: address.fullName,
+  phone: address.phone,
+  addressLine1: address.addressLine1,
+  addressLine2: address.addressLine2,
+  city: address.city,
+  state: address.state,
+  postalCode: address.postalCode,
+  country: address.country,
+  isDefault: address.isDefault,
+  createdAt: address.createdAt,
+  updatedAt: address.updatedAt,
+});
+
+export const mapDelivery = (delivery: Delivery): IDeliveryResponse => ({
+  id: delivery.id,
+  order_item_id: delivery.order_item_id,
+  status: delivery.status,
+  trackingNumber: delivery.trackingNumber,
+  carrier: delivery.carrier,
+  estimatedDelivery: delivery.estimatedDelivery,
+  deliveredAt: delivery.deliveredAt,
+  notes: delivery.notes,
+  createdAt: delivery.createdAt,
+  updatedAt: delivery.updatedAt,
+});

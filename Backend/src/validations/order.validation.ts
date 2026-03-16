@@ -37,3 +37,10 @@ export const updateOrderItemStatusValidation = yup.object({
     )
     .required("Status is required"),
 });
+
+export const updateDeliveryValidation = yup.object({
+  trackingNumber: yup.string().trim().optional(),
+  carrier: yup.string().trim().optional(),
+  estimatedDelivery: yup.date().optional(),
+  notes: yup.string().trim().nullable().optional(),
+});

@@ -43,6 +43,9 @@ export class UserAddress {
   @Column({ type: "text" })
   postalCode!: string;
 
+  @Column({ type: "text" })
+  country!: string;
+
   @Column({ type: "boolean", default: false })
   isDefault!: boolean;
 

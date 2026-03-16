@@ -1,6 +1,6 @@
 import type { Context } from "koa";
-import { createOrderValidation, orderItemParamValidation, orderParamValidation, updateOrderItemStatusValidation } from "../validations/order.validation.js";
-import { cancelOrderService, getMyOrdersService, getOrderByIdService, getSellerOrderItemsService, placeOrderService, updateOrderItemStatusService } from "../service/order.service.js";
+import { createOrderValidation, orderItemParamValidation, orderParamValidation, updateDeliveryValidation, updateOrderItemStatusValidation } from "../validations/order.validation.js";
+import { cancelOrderService, getMyOrdersService, getOrderByIdService, getSellerOrderItemsService, placeOrderService, updateDeliveryService, updateOrderItemStatusService } from "../service/order.service.js";
 import { OrderItemStatus } from "../types/global.types.js";
 
 export const placeOrder = async (ctx: Context) => {
@@ -76,5 +76,21 @@ export const updateOrderItemStatus = async (ctx: Context) => {
   ctx.body = {
     success: true,
     item: result.item,
+  };
+};
+
+
+export const updateDelivery = async (ctx: Context) => {
+  const { itemId } = await orderItemParamValidation.validate(ctx.params);
+  const sellerId = ctx.state.user.id;
+  const data = await updateDeliveryValidation.validate(ctx.request.body, {
+    stripUnknown: true,
+  });
+  const result = await updateDeliveryService(itemId, sellerId, data);
+  ctx.status = 200;
+  ctx.body = {
+    success: true,
+    message: "Delivery updated successfully",
+    delivery: result.delivery,
   };
 };

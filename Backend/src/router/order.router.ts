@@ -6,6 +6,7 @@ import {
   getOrderById,
   getSellerOrders,
   placeOrder,
+  updateDelivery,
   updateOrderItemStatus,
 } from "../controller/order.controller.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
@@ -25,5 +26,7 @@ orderRouter.use(sellerAuth)
 // seller
 orderRouter.get("/seller/items", getSellerOrders);
 orderRouter.patch("/seller/items/:itemId/status", updateOrderItemStatus);
+orderRouter.patch("/seller/items/:itemId/delivery",updateDelivery);
+
 
 export default orderRouter;

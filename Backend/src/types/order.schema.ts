@@ -45,3 +45,23 @@ export interface IOrderResponse {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface IDeliveryResponse {
+  id: string;
+  order_item_id: string;
+  status: string;
+  trackingNumber: string | null;
+  carrier: string | null;
+  estimatedDelivery: Date | null;
+  deliveredAt: Date | null;
+  notes: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IUpdateDelivery {
+  trackingNumber?: string;
+  carrier?: string;
+  estimatedDelivery?: Date;
+  notes?: string | null;
+}
