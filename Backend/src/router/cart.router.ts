@@ -7,10 +7,10 @@ const cartRouter = new Router({prefix:"/cart"});
 
 cartRouter.use(authMiddleware);
 
+cartRouter.get("/",getCart);
+cartRouter.post("/",addToCart);
 cartRouter.patch('/item/:id',updateCartItem)
 cartRouter.delete("/item/:id",removeCartItem);
-cartRouter.get("/",getCart);
 
-cartRouter.post("/",addToCart);
 
 export default cartRouter;

@@ -35,3 +35,35 @@ export type queryType = {
     page?: number;
     pageSize?: number;
 }
+
+export enum OrderStatus {
+  PENDING = "PENDING",       
+  CONFIRMED = "CONFIRMED",  
+  CANCELLED = "CANCELLED",
+  COMPLETED = "COMPLETED",   
+}
+
+export enum PaymentStatus {
+  UNPAID = "UNPAID",
+  PAID = "PAID",
+  REFUNDED = "REFUNDED",
+}
+
+export enum OrderItemStatus {
+  PENDING = "PENDING",
+  PROCESSING = "PROCESSING",
+  SHIPPED = "SHIPPED",
+  DELIVERED = "DELIVERED",
+  CANCELLED = "CANCELLED",
+  REFUNDED = "REFUNDED",
+}
+
+export enum DeliveryStatus {
+  PENDING = "PENDING",
+  PROCESSING = "PROCESSING",
+  SHIPPED = "SHIPPED",
+  OUT_FOR_DELIVERY = "OUT_FOR_DELIVERY",
+  DELIVERED = "DELIVERED",
+  FAILED = "FAILED",
+  RETURNED = "RETURNED",
+}

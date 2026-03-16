@@ -29,6 +29,7 @@ export const addToCart = async (ctx: Context) => {
     item:item.cartItem,
   };
 };
+
 export const getCart = async (ctx: Context) => {
 
   const userId = ctx.state.user.id;

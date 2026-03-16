@@ -1,0 +1,80 @@
+import type { Context } from "koa";
+import { createOrderValidation, orderItemParamValidation, orderParamValidation, updateOrderItemStatusValidation } from "../validations/order.validation.js";
+import { cancelOrderService, getMyOrdersService, getOrderByIdService, getSellerOrderItemsService, placeOrderService, updateOrderItemStatusService } from "../service/order.service.js";
+import { OrderItemStatus } from "../types/global.types.js";
+
+export const placeOrder = async (ctx: Context) => {
+  const userId = ctx.state.user.id;
+  const data = await createOrderValidation.validate(ctx.request.body, {
+    stripUnknown: true,
+  });
+  const result = await placeOrderService(userId, data as any);
+  ctx.status = 201;
+  ctx.body = {
+    success: true,
+    message: "Order placed successfully",
+    order: result.order,
+  };
+};
+
+export const getMyOrders = async (ctx: Context) => {
+  const userId = ctx.state.user.id;
+  const result = await getMyOrdersService(userId);
+  ctx.status = 200;
+  ctx.body = {
+    success: true,
+    orders: result.orders,
+    total: result.total,
+  };
+};
+
+export const getOrderById = async (ctx: Context) => {
+  const { id } = await orderParamValidation.validate(ctx.params);
+  const userId = ctx.state.user.id;
+  const result = await getOrderByIdService(id, userId);
+  ctx.status = 200;
+  ctx.body = {
+    success: true,
+    order: result.order,
+  };
+};
+
+export const cancelOrder = async (ctx: Context) => {
+  const { id } = await orderParamValidation.validate(ctx.params);
+  const userId = ctx.state.user.id;
+  await cancelOrderService(id, userId);
+  ctx.status = 200;
+  ctx.body = {
+    success: true,
+    message: "Order cancelled successfully",
+  };
+};
+
+export const getSellerOrders = async (ctx: Context) => {
+  const sellerId = ctx.state.user.id;
+  const result = await getSellerOrderItemsService(sellerId);
+  ctx.status = 200;
+  ctx.body = {
+    success: true,
+    items: result.items,
+    total: result.total,
+  };
+};
+
+export const updateOrderItemStatus = async (ctx: Context) => {
+  const { itemId } = await orderItemParamValidation.validate(ctx.params);
+  const sellerId = ctx.state.user.id;
+  const { status } = await updateOrderItemStatusValidation.validate(
+    ctx.request.body
+  );
+  const result = await updateOrderItemStatusService(
+    itemId,
+    sellerId,
+    status as OrderItemStatus
+  );
+  ctx.status = 200;
+  ctx.body = {
+    success: true,
+    item: result.item,
+  };
+};

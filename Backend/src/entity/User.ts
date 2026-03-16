@@ -9,6 +9,8 @@ import {
 } from "typeorm";
 import { userRole, userStatus } from "../types/global.types.js";
 import { Product } from "./Product.js";
+import { Order } from "./Order.js";
+import { UserAddress } from "./UserAddresses.js";
 
 @Entity("users")
 export class User {
@@ -33,6 +35,12 @@ export class User {
   @Column({ type: "text", nullable: true, name: "profile_pic" })
   profilePic!: string;
 
+  @OneToMany(() => Order, (order) => order.user)
+  orders!: Relation<Order[]>;
+
+  @OneToMany(() => UserAddress, (address) => address.user)
+  addresses!: Relation<UserAddress[]>;
+
   @Column({ nullable: true, type: "text" })
   otp!: string | null;
 
@@ -44,10 +52,10 @@ export class User {
   otpExpires!: Date | null;
 
   @Column({ type: "text", nullable: true })
-  newEmail!: string | null; 
+  newEmail!: string | null;
 
   @Column({ type: "text", nullable: true })
-  emailOtp!: string | null; 
+  emailOtp!: string | null;
 
   @Column({ type: "timestamp", nullable: true })
   emailOtpExpires!: Date | null;
