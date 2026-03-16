@@ -1,4 +1,6 @@
+import { CartItem } from "../entity/CartItem.js";
 import { Product } from "../entity/Product.js";
+import { ICartItemResponse } from "../types/cart.schema.js";
 import { IProductResponse } from "../types/product.schema.js";
 
 export const mapProduct = (product: Product): IProductResponse=> {
@@ -23,3 +25,18 @@ export const mapProduct = (product: Product): IProductResponse=> {
   };
 
 };
+
+
+export const mapCartItem = (item: CartItem): ICartItemResponse => ({
+  id: item.id,
+  cart_id: item.cart_id,
+  quantity: item.quantity,
+  createdAt: item.createdAt,
+  updatedAt: item.updatedAt,
+  product: {
+    id: item.product.id,
+    name: item.product.name,
+    price: Number(item.product.price),
+    primaryImage: item.product.primaryImage,
+  },
+});
