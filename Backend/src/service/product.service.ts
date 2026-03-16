@@ -1,29 +1,26 @@
 import { AppDataSource } from "../config/data-source.js";
 import { Product } from "../entity/Product.js";
 import { ProductImage } from "../entity/ProductImage.js";
-import { NotFoundError } from "../lib/erros.js";
+import { ForbiddenError, NotFoundError } from "../lib/erros.js";
 import { mapProduct } from "../lib/utlis.js";
 import { queryType } from "../types/global.types.js";
-import {
-  ICreateProduct,
-  IProductResponse,
-} from "../types/product.schema.js";
-import { productValidation } from "../validations/product.validation.js";
+import { ICreateProduct, IProductResponse, IUpdateProduct } from "../types/product.schema.js";
 
 const productRepository = AppDataSource.getRepository(Product);
 const productImageRepository = AppDataSource.getRepository(ProductImage);
+
 export const createProductService = async (
   productData: ICreateProduct,
 ): Promise<{ product: IProductResponse; success: boolean }> => {
   const { images, ...productField } = productData;
 
-//creating product
+  //creating product
   const product = productRepository.create(productField);
 
-//   saving product
+  //   saving product
   const savedProduct = await productRepository.save(product);
 
-//   creating and saving secondary images
+  //   creating and saving secondary images
   if (images && images.length > 0) {
     const imageEntities = images.map((img) =>
       productImageRepository.create({
@@ -35,7 +32,7 @@ export const createProductService = async (
     await productImageRepository.save(imageEntities);
   }
 
-//   response with product details and user name and id
+  //   response with product details and user name and id
   const fullProduct = await productRepository.findOne({
     where: { id: savedProduct.id },
     relations: ["images", "seller"],
@@ -45,6 +42,7 @@ export const createProductService = async (
       price: true,
       description: true,
       category: true,
+      stock: true,
       primaryImage: true,
       createdAt: true,
       updatedAt: true,
@@ -66,11 +64,12 @@ export const createProductService = async (
   return { product: mapProduct(fullProduct), success: true };
 };
 
-
-export const getProductsService = async (query: queryType): Promise<{ products: IProductResponse[]; total: number }> => {
+export const getProductsService = async (
+  query: queryType,
+): Promise<{ products: IProductResponse[]; total: number }> => {
   const { name, category, minPrice, maxPrice, page = 1, pageSize = 10 } = query;
   const skip = (page - 1) * pageSize;
-    const qb = productRepository
+  const qb = productRepository
     .createQueryBuilder("product")
     .leftJoinAndSelect("product.seller", "seller")
     .leftJoinAndSelect("product.images", "images")
@@ -82,8 +81,6 @@ export const getProductsService = async (query: queryType): Promise<{ products: 
   if (maxPrice) qb.andWhere("product.price <= :maxPrice", { maxPrice });
 
   const total = await qb.getCount();
-
-
   const products = await qb
     .orderBy("product.createdAt", "DESC")
     .skip(skip)
@@ -91,14 +88,11 @@ export const getProductsService = async (query: queryType): Promise<{ products: 
     .getMany();
 
   return { products: products.map(mapProduct), total };
-
-
-}
+};
 
 export const getAProductService = async (
   id: string,
 ): Promise<{ product: IProductResponse; success: boolean }> => {
-
   const product = await productRepository.findOne({
     where: { id, deleted: false },
     relations: ["images", "seller"],
@@ -112,4 +106,78 @@ export const getAProductService = async (
     product: mapProduct(product),
     success: true,
   };
+};
+
+export const getSellerProduct = async (
+  productId: string,
+  sellerId: string
+): Promise<Product> => {
+
+  const product = await productRepository.findOne({
+    where: { id: productId, seller_id: sellerId, deleted: false },
+    relations: ["images", "seller"],
+  });
+
+  if (!product) {
+    throw new NotFoundError("Product not found");
+  }
+
+  return product;
+};
+
+export const editProductService = async (
+  productId: string,
+  sellerId: string,
+  updatedData: IUpdateProduct
+): Promise<{ product: IProductResponse; success: boolean }> => {
+
+  const { images, ...productFields } = updatedData;
+
+  const product = await getSellerProduct(productId, sellerId);
+
+  Object.assign(product, productFields);
+
+  const savedProduct = await productRepository.save(product);
+
+  if (images) {
+
+    await productImageRepository.delete({
+      product_id: savedProduct.id,
+    });
+
+    const imageEntities = images.map((img) =>
+      productImageRepository.create({
+        img_url: img.url,
+        product_id: savedProduct.id,
+      }),
+    );
+
+    await productImageRepository.save(imageEntities);
+  }
+
+  const fullProduct = await productRepository.findOne({
+    where: { id: savedProduct.id },
+    relations: ["images", "seller"],
+  });
+
+  if (!fullProduct) {
+    throw new NotFoundError("Product not found after update");
+  }
+
+  return {
+    product: mapProduct(fullProduct),
+    success: true,
+  };
+};
+
+export const deleteProductService = async (
+  productId: string,
+  sellerId: string
+):Promise<{success:boolean}> => {
+  const product = await getSellerProduct(productId, sellerId);
+
+  product.deleted = true;
+  await productRepository.save(product);
+
+  return { success: true };
 };

@@ -8,6 +8,7 @@ export const mapProduct = (product: Product): IProductResponse=> {
     price: Number(product.price),
     description: product.description,
     category: product.category,
+    stock: product.stock,
     primaryImage: product.primaryImage,
     seller: {
       id: product.seller.id,

@@ -10,6 +10,7 @@ export interface ICreateProduct {
   price: number;
   description: string;
   category: string;
+  stock:number;
   primaryImage: string;
   images: ProductImageInput[];
   seller_id: string;
@@ -35,6 +36,7 @@ export interface IProductResponse {
   price: number;       
   description: string;
   category: string;
+  stock:number;
   primaryImage: string;
   images: ProductImageResponse[];
   seller: {
@@ -43,4 +45,16 @@ export interface IProductResponse {
   };
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface IUpdateProduct {
+  name?: string;
+  price?: number;
+  description?: string;
+  category?: string;
+  stock?:number;
+  primaryImage?: string;
+  images?: {
+    url: string;
+  }[];
 }

@@ -37,6 +37,9 @@ export class Product {
   @Column({ type: "text" })
   category!: string;
 
+  @Column({ type: "int", default: 0 })
+  stock!: number;
+
   @Column({ type: "boolean", default: false })
   deleted!: boolean;
 

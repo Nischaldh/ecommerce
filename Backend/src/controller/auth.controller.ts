@@ -13,7 +13,6 @@ import {
   loginService,
   resetPasswordService,
   signUpService,
-  verifyOtpService,
   verifyUserService,
 } from "../service/auth.service.js";
 
