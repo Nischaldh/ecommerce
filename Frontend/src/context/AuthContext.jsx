@@ -51,7 +51,7 @@ useEffect(() => {
   // signup just sends OTP — no token yet
   const signup = async (data) => {
     const res = await signupService(data);
-    if (res.message) {
+    if (res.success) {
       toast.success("OTP sent to your email!");
     } else {
       toast.error(res.message || "Signup failed");

@@ -36,7 +36,7 @@ export const signUp = async (ctx: Context) => {
     throw new Error("Something went wrong");
   }
   ctx.status = 201;
-  ctx.body = { message: "OTP Sent to email successful." };
+  ctx.body = { message: "OTP Sent to email successful.", success:true};
 };
 
 export const generateOtp = async (ctx: Context) => {
@@ -95,8 +95,10 @@ export const logIn = async (ctx: Context) => {
     ctx.request.body,
   );
   const response = await loginService(validatedData);
+  console.log(response);
   ctx.status = 200;
   ctx.body = {
+    success:true,
     message: "Login Successful",
     user: response.user,
     token: response.token,

@@ -15,22 +15,8 @@ createRoot(document.getElementById("root")).render(
       <Provider store={store}>
         <AuthProvider>
           <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 3000,
-              success: {
-                style: {
-                  background: "#22c55e",
-                  color: "#fff",
-                },
-              },
-              error: {
-                style: {
-                  background: "#ef4444",
-                  color: "#fff",
-                },
-              },
-            }}
+            position="top-center"
+        
           />
           <App />
         </AuthProvider>
