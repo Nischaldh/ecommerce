@@ -5,7 +5,7 @@ import { transporter } from "../lib/email.js";
 import { BadRequestError, NotFoundError } from "../lib/erros.js";
 import { generateOtp } from "../lib/otp.js";
 import { successResponse } from "../types/global.types.js";
-import { UpdateProfileInput } from "../types/user.schema.js";
+import { IUser, UpdateProfileInput } from "../types/user.schema.js";
 
 const userRepository = AppDataSource.getRepository(User);
 
@@ -97,3 +97,12 @@ export const verifyEmailChangeService = async (
 
   return { success: true, message: "Email updated successfully" };
 };
+
+export const getMeService = async(userId:string):Promise<{user:IUser;success:boolean}>=>{
+  const user = await userRepository.findOne({where:{id:userId}});
+  if(!user) throw new NotFoundError("User not found.");
+  return{
+    user,
+    success:true
+  }
+}

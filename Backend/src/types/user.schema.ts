@@ -3,7 +3,7 @@ export interface IUser{
     name:string,
     email:string,
     role:string,
-    profilePic:string,
+    profilePic:string|null,
     createdAt:Date,
     updatedAt:Date,
 }

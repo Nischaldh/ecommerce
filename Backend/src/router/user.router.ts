@@ -1,5 +1,5 @@
 import Router from "@koa/router";
-import { updateProfile, uploadProfilePic, verifyEmailChange } from "../controller/user.controller.js";
+import { getMe, updateProfile, uploadProfilePic, verifyEmailChange } from "../controller/user.controller.js";
 import { uploadSingleImage } from "../middleware/upload.middleware.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
 
@@ -11,6 +11,7 @@ const userRouter = new Router({ prefix: "/users" });
  */
 userRouter.use(authMiddleware);
 
+userRouter.get("/me",getMe);
 userRouter.put(
   "/profile/pic",
   uploadSingleImage.single("profilePic"),
