@@ -1,12 +1,16 @@
 import {
-  Entity, PrimaryGeneratedColumn, Column,
-  OneToOne, JoinColumn,
-  CreateDateColumn, UpdateDateColumn, Relation,
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  Relation,
 } from "typeorm";
 
 import { DeliveryStatus } from "../types/global.types.js";
 import { OrderItem } from "./OrderItems.js";
-
 
 @Entity("deliveries")
 export class Delivery {
@@ -20,27 +24,39 @@ export class Delivery {
   @JoinColumn({ name: "order_item_id" })
   orderItem!: Relation<OrderItem>;
 
-  @Column({ type: "enum", enum: DeliveryStatus, default: DeliveryStatus.PENDING })
+  @Column({
+    type: "enum",
+    enum: DeliveryStatus,
+    default: DeliveryStatus.PENDING,
+  })
   status!: DeliveryStatus;
 
-  @Column({ type: "text", nullable: true })
+  @Column({ type: "text", nullable: true, name: "tracking_number" })
   trackingNumber!: string | null;
 
   @Column({ type: "text", nullable: true })
   carrier!: string | null;
 
-  @Column({ type: "timestamptz", nullable: true })
+  @Column({ type: "timestamptz", nullable: true, name: "estimated_delivery" })
   estimatedDelivery!: Date | null;
 
-  @Column({ type: "timestamptz", nullable: true })
+  @Column({ type: "timestamptz", nullable: true, name: "delivered_at" })
   deliveredAt!: Date | null;
 
   @Column({ type: "text", nullable: true })
   notes!: string | null;
 
-  @CreateDateColumn({ type: "timestamptz", name: "created_at" })
+  @CreateDateColumn({
+    type: "timestamp",
+    name: "created_at",
+    default: () => "CURRENT_TIMESTAMP",
+  })
   createdAt!: Date;
 
-  @UpdateDateColumn({ type: "timestamptz", name: "updated_at" })
+  @UpdateDateColumn({
+    type: "timestamptz",
+    name: "updated_at",
+    default: () => "CURRENT_TIMESTAMP",
+  })
   updatedAt!: Date;
 }

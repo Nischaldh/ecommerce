@@ -7,7 +7,8 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  Relation
+  Relation,
+  OneToOne
 } from "typeorm";
 
 import { User } from "./User.js";
@@ -20,19 +21,27 @@ export class Cart {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column({ type: "uuid" })
+  @Column({ type: "uuid" , name:"user_id"})
   user_id!: string;
 
-  @ManyToOne(() => User)
+  @OneToOne(() => User)
   @JoinColumn({ name: "user_id" })
   user!: Relation<User>;
 
   @OneToMany(() => CartItem, item => item.cart)
   items!: Relation<CartItem[]>;
 
-  @CreateDateColumn()
+   @CreateDateColumn({
+    type: "timestamp",
+    name: "created_at",
+    default: () => "CURRENT_TIMESTAMP",
+  })
   createdAt!: Date;
 
-  @UpdateDateColumn()
+    @UpdateDateColumn({
+    type: "timestamptz",
+    name: "updated_at",
+    default: () => "CURRENT_TIMESTAMP",
+  })
   updatedAt!: Date;
 }

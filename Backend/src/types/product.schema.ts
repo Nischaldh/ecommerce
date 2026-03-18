@@ -39,6 +39,8 @@ export interface IProductResponse {
   stock:number;
   primaryImage: string;
   images: ProductImageResponse[];
+  averageRating: number; 
+  reviewCount: number; 
   seller: {
     id: string;
     name: string;

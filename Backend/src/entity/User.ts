@@ -11,6 +11,7 @@ import { userRole, userStatus } from "../types/global.types.js";
 import { Product } from "./Product.js";
 import { Order } from "./Order.js";
 import { UserAddress } from "./UserAddresses.js";
+import { Review } from "./Review.js";
 
 @Entity("users")
 export class User {
@@ -51,16 +52,15 @@ export class User {
   })
   otpExpires!: Date | null;
 
-  @Column({ type: "text", nullable: true })
+  @Column({ type: "text", nullable: true, name: "new_email" })
   newEmail!: string | null;
 
-  @Column({ type: "text", nullable: true })
+  @Column({ type: "text", nullable: true, name: "email_otp" })
   emailOtp!: string | null;
 
-  @Column({ type: "timestamp", nullable: true })
+  @Column({ type: "timestamp", nullable: true, name: "email_otp_expires" })
   emailOtpExpires!: Date | null;
 
-  // relation with product table
   @OneToMany(() => Product, (product) => product.seller)
   products!: Relation<Product[]>;
 
@@ -76,4 +76,7 @@ export class User {
     default: () => "CURRENT_TIMESTAMP",
   })
   updatedAt!: Date;
+
+  @OneToMany(() => Review, (review) => review.user)
+  reviews!: Relation<Review[]>;
 }

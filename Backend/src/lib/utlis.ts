@@ -3,15 +3,21 @@ import { Delivery } from "../entity/Delivery.js";
 import { Order } from "../entity/Order.js";
 import { OrderItem } from "../entity/OrderItems.js";
 import { Product } from "../entity/Product.js";
+import { Review } from "../entity/Review.js";
 import { UserAddress } from "../entity/UserAddresses.js";
 import { IAddressResponse } from "../types/address.schema.js";
 import { ICartItemResponse } from "../types/cart.schema.js";
 import { OrderItemStatus } from "../types/global.types.js";
-import {  IDeliveryResponse, IOrderItemResponse, IOrderResponse } from "../types/order.schema.js";
+import {
+  IDeliveryResponse,
+  IOrderItemResponse,
+  IOrderResponse,
+} from "../types/order.schema.js";
 import { IProductResponse } from "../types/product.schema.js";
+import { IReviewResponse } from "../types/review.schema.js";
 
-export const mapProduct = (product: Product): IProductResponse=> {
-   return {
+export const mapProduct = (product: Product): IProductResponse => {
+  return {
     id: product.id,
     name: product.name,
     price: Number(product.price),
@@ -19,6 +25,8 @@ export const mapProduct = (product: Product): IProductResponse=> {
     category: product.category,
     stock: product.stock,
     primaryImage: product.primaryImage,
+    averageRating: Number(product.averageRating),
+    reviewCount: product.reviewCount,
     seller: {
       id: product.seller.id,
       name: product.seller.name,
@@ -30,7 +38,6 @@ export const mapProduct = (product: Product): IProductResponse=> {
     createdAt: product.createdAt,
     updatedAt: product.updatedAt,
   };
-
 };
 
 export const mapCartItem = (item: CartItem): ICartItemResponse => ({
@@ -46,7 +53,6 @@ export const mapCartItem = (item: CartItem): ICartItemResponse => ({
     primaryImage: item.product.primaryImage,
   },
 });
-
 
 export const mapOrderItem = (item: OrderItem): IOrderItemResponse => ({
   id: item.id,
@@ -81,7 +87,10 @@ export const mapOrder = (order: Order): IOrderResponse => ({
 });
 
 export const allowedTransitions: Record<OrderItemStatus, OrderItemStatus[]> = {
-  [OrderItemStatus.PENDING]: [OrderItemStatus.PROCESSING, OrderItemStatus.CANCELLED],
+  [OrderItemStatus.PENDING]: [
+    OrderItemStatus.PROCESSING,
+    OrderItemStatus.CANCELLED,
+  ],
   [OrderItemStatus.PROCESSING]: [OrderItemStatus.SHIPPED],
   [OrderItemStatus.SHIPPED]: [OrderItemStatus.DELIVERED],
   [OrderItemStatus.DELIVERED]: [],
@@ -116,4 +125,18 @@ export const mapDelivery = (delivery: Delivery): IDeliveryResponse => ({
   notes: delivery.notes,
   createdAt: delivery.createdAt,
   updatedAt: delivery.updatedAt,
+});
+
+export const mapReview = (review: Review): IReviewResponse => ({
+  id: review.id,
+  productId: review.product_id,
+  rating: review.rating,
+  comment: review.comment,
+  user: {
+    id: review.user.id,
+    name: review.user.name,
+    profilePic: review.user.profilePic ?? null,
+  },
+  createdAt: review.createdAt,
+  updatedAt: review.updatedAt,
 });

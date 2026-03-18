@@ -4,7 +4,11 @@ import { ProductImage } from "../entity/ProductImage.js";
 import { ForbiddenError, NotFoundError } from "../lib/erros.js";
 import { mapProduct } from "../lib/utlis.js";
 import { queryType } from "../types/global.types.js";
-import { ICreateProduct, IProductResponse, IUpdateProduct } from "../types/product.schema.js";
+import {
+  ICreateProduct,
+  IProductResponse,
+  IUpdateProduct,
+} from "../types/product.schema.js";
 
 const productRepository = AppDataSource.getRepository(Product);
 const productImageRepository = AppDataSource.getRepository(ProductImage);
@@ -67,7 +71,16 @@ export const createProductService = async (
 export const getProductsService = async (
   query: queryType,
 ): Promise<{ products: IProductResponse[]; total: number }> => {
-  const { name, category, minPrice, maxPrice, page = 1, pageSize = 10 } = query;
+  const {
+    name,
+    category,
+    minPrice,
+    maxPrice,
+    page = 1,
+    pageSize = 10,
+    minRating,
+    sort,
+  } = query;
   const skip = (page - 1) * pageSize;
   const qb = productRepository
     .createQueryBuilder("product")
@@ -79,13 +92,17 @@ export const getProductsService = async (
   if (category) qb.andWhere("product.category = :category", { category });
   if (minPrice) qb.andWhere("product.price >= :minPrice", { minPrice });
   if (maxPrice) qb.andWhere("product.price <= :maxPrice", { maxPrice });
+  if (minRating)
+    qb.andWhere("product.averageRating >= :minRating", { minRating });
+
+  if (sort === "rating") {
+    qb.orderBy("product.averageRating", "DESC");
+  } else {
+    qb.orderBy("product.createdAt", "DESC");
+  }
 
   const total = await qb.getCount();
-  const products = await qb
-    .orderBy("product.createdAt", "DESC")
-    .skip(skip)
-    .take(pageSize)
-    .getMany();
+  const products = await qb.skip(skip).take(pageSize).getMany();
 
   return { products: products.map(mapProduct), total };
 };
@@ -110,9 +127,8 @@ export const getAProductService = async (
 
 export const getSellerProduct = async (
   productId: string,
-  sellerId: string
+  sellerId: string,
 ): Promise<Product> => {
-
   const product = await productRepository.findOne({
     where: { id: productId, seller_id: sellerId, deleted: false },
     relations: ["images", "seller"],
@@ -128,9 +144,8 @@ export const getSellerProduct = async (
 export const editProductService = async (
   productId: string,
   sellerId: string,
-  updatedData: IUpdateProduct
+  updatedData: IUpdateProduct,
 ): Promise<{ product: IProductResponse; success: boolean }> => {
-
   const { images, ...productFields } = updatedData;
 
   const product = await getSellerProduct(productId, sellerId);
@@ -140,7 +155,6 @@ export const editProductService = async (
   const savedProduct = await productRepository.save(product);
 
   if (images) {
-
     await productImageRepository.delete({
       product_id: savedProduct.id,
     });
@@ -172,8 +186,8 @@ export const editProductService = async (
 
 export const deleteProductService = async (
   productId: string,
-  sellerId: string
-):Promise<{success:boolean}> => {
+  sellerId: string,
+): Promise<{ success: boolean }> => {
   const product = await getSellerProduct(productId, sellerId);
 
   product.deleted = true;

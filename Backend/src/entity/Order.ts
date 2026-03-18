@@ -30,16 +30,17 @@ export class Order {
       to: (v: number) => v,
       from: (v: string) => parseFloat(v),
     },
+    name:"total_amount"
   })
   totalAmount!: number;
 
   @Column({ type: "enum", enum: OrderStatus, default: OrderStatus.PENDING })
   status!: OrderStatus;
 
-  @Column({ type: "enum", enum: PaymentStatus, default: PaymentStatus.UNPAID })
+  @Column({ type: "enum", enum: PaymentStatus, default: PaymentStatus.UNPAID, name:"payment_status" })
   paymentStatus!: PaymentStatus;
 
-  @Column({ type: "jsonb" })
+  @Column({ type: "jsonb", name:"shipping_address" })
   shippingAddress!: {
     addressId?: string;
     fullName: string;
@@ -52,12 +53,21 @@ export class Order {
     country: string;
   };
 
-  @Column({ type: "text", nullable: true })
+  @Column({ type: "text", nullable: true, name:"payment_reference" })
   paymentReference!: string | null;
 
-  @CreateDateColumn({ type: "timestamptz", name: "created_at" })
+ 
+   @CreateDateColumn({
+    type: "timestamp",
+    name: "created_at",
+    default: () => "CURRENT_TIMESTAMP",
+  })
   createdAt!: Date;
 
-  @UpdateDateColumn({ type: "timestamptz", name: "updated_at" })
+    @UpdateDateColumn({
+    type: "timestamptz",
+    name: "updated_at",
+    default: () => "CURRENT_TIMESTAMP",
+  })
   updatedAt!: Date;
 }

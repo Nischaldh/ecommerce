@@ -11,6 +11,7 @@ import {
 } from "typeorm";
 import { User } from "./User.js";
 import { ProductImage } from "./ProductImage.js";
+import { Review } from "./Review.js";
 
 @Entity()
 export class Product {
@@ -69,4 +70,22 @@ export class Product {
     default: () => "CURRENT_TIMESTAMP",
   })
   updatedAt!: Date;
+  @OneToMany(() => Review, (review) => review.product)
+  reviews!: Relation<Review[]>;
+
+  @Column({
+    type: "decimal",
+    precision: 3,
+    scale: 2,
+    default: 0,
+    name: "average_rating",
+    transformer: {
+      to: (v: number) => v,
+      from: (v: string) => parseFloat(v),
+    },
+  })
+  averageRating!: number;
+
+  @Column({ type: "int", default: 0, name: "review_count" })
+  reviewCount!: number;
 }

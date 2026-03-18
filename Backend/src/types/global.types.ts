@@ -32,6 +32,8 @@ export type queryType = {
     category?: string;
     minPrice?: number;
     maxPrice?: number;
+    minRating?: number;   
+    sort?: string;        
     page?: number;
     pageSize?: number;
 }

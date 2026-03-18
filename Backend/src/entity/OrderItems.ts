@@ -1,7 +1,13 @@
 import {
-  Entity, PrimaryGeneratedColumn, Column,
-  ManyToOne, OneToOne, JoinColumn,
-  CreateDateColumn, UpdateDateColumn, Relation,
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  Relation,
 } from "typeorm";
 import { Order } from "./Order.js";
 import { Product } from "./Product.js";
@@ -23,15 +29,18 @@ export class OrderItem {
   @Column({ type: "uuid" })
   seller_id!: string;
 
-  @Column({ type: "text" })
+  @Column({ type: "text", name:"product_name" })
   productName!: string;
 
   @Column({
-    type: "decimal", precision: 10, scale: 2,
+    type: "decimal",
+    precision: 10,
+    scale: 2,
     transformer: {
       to: (v: number) => v,
       from: (v: string) => parseFloat(v),
     },
+    name:"price_at_purchase"
   })
   priceAtPurchase!: number;
 
@@ -39,7 +48,9 @@ export class OrderItem {
   quantity!: number;
 
   @Column({
-    type: "decimal", precision: 10, scale: 2,
+    type: "decimal",
+    precision: 10,
+    scale: 2,
     transformer: {
       to: (v: number) => v,
       from: (v: string) => parseFloat(v),
@@ -47,7 +58,11 @@ export class OrderItem {
   })
   subtotal!: number;
 
-  @Column({ type: "enum", enum: OrderItemStatus, default: OrderItemStatus.PENDING })
+  @Column({
+    type: "enum",
+    enum: OrderItemStatus,
+    default: OrderItemStatus.PENDING,
+  })
   status!: OrderItemStatus;
 
   @ManyToOne(() => Order, (order) => order.items)
@@ -62,12 +77,23 @@ export class OrderItem {
   @JoinColumn({ name: "seller_id" })
   seller!: Relation<User>;
 
-  @OneToOne(() => Delivery, (delivery) => delivery.orderItem, { nullable: true, cascade: true })
+  @OneToOne(() => Delivery, (delivery) => delivery.orderItem, {
+    nullable: true,
+    cascade: true,
+  })
   delivery!: Relation<Delivery> | null;
 
-  @CreateDateColumn({ type: "timestamptz", name: "created_at" })
+  @CreateDateColumn({
+    type: "timestamp",
+    name: "created_at",
+    default: () => "CURRENT_TIMESTAMP",
+  })
   createdAt!: Date;
 
-  @UpdateDateColumn({ type: "timestamptz", name: "updated_at" })
+  @UpdateDateColumn({
+    type: "timestamptz",
+    name: "updated_at",
+    default: () => "CURRENT_TIMESTAMP",
+  })
   updatedAt!: Date;
 }

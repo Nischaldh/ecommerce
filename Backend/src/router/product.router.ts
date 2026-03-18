@@ -9,6 +9,7 @@ import {
 import { authMiddleware } from "../middleware/auth.middleware.js";
 import { sellerAuth } from "../middleware/seller.auth.js";
 import { uploadMultipleImages } from "../middleware/upload.middleware.js";
+import { getProductReviews } from "../controller/review.controller.js";
 
 const productRouter = new Router({ prefix: "/products" });
 
@@ -16,7 +17,7 @@ const productRouter = new Router({ prefix: "/products" });
 const publicProductRouter = new Router();
 publicProductRouter.get("/", getAllProduct);
 publicProductRouter.get("/:id", getAProduct);
-
+publicProductRouter.get("/:productId/reviews",getProductReviews);
 // private router
 const privateProductRouter = new Router();
 

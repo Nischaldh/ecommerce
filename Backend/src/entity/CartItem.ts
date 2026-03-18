@@ -35,9 +35,18 @@ export class CartItem {
   @JoinColumn({ name: "product_id" })
   product!: Relation<Product>;
 
-  @CreateDateColumn()
+
+   @CreateDateColumn({
+    type: "timestamp",
+    name: "created_at",
+    default: () => "CURRENT_TIMESTAMP",
+  })
   createdAt!: Date;
 
-  @UpdateDateColumn()
+    @UpdateDateColumn({
+    type: "timestamptz",
+    name: "updated_at",
+    default: () => "CURRENT_TIMESTAMP",
+  })
   updatedAt!: Date;
 }
