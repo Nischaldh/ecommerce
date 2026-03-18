@@ -3,7 +3,7 @@ import { Product } from "../entity/Product.js";
 import { ProductImage } from "../entity/ProductImage.js";
 import { ForbiddenError, NotFoundError } from "../lib/erros.js";
 import { mapProduct } from "../lib/utlis.js";
-import { queryType } from "../types/global.types.js";
+import { queryType, SortBy } from "../types/global.types.js";
 import {
   ICreateProduct,
   IProductResponse,
@@ -95,11 +95,31 @@ export const getProductsService = async (
   if (minRating)
     qb.andWhere("product.averageRating >= :minRating", { minRating });
 
-  if (sort === "rating") {
-    qb.orderBy("product.averageRating", "DESC");
-  } else {
-    qb.orderBy("product.createdAt", "DESC");
+  switch (sort) {
+    case SortBy.CREATED_AT_ASC:
+      qb.orderBy("product.createdAt", "ASC");
+      break;
+
+    case SortBy.CREATED_AT_DESC:
+      qb.orderBy("product.createdAt", "DESC");
+      break;
+
+    case SortBy.PRICE_ASC:
+      qb.orderBy("product.price", "ASC");
+      break;
+
+    case SortBy.PRICE_DESC:
+      qb.orderBy("product.price", "DESC");
+      break;
+
+    case SortBy.RATING:
+      qb.orderBy("product.averageRating", "DESC");
+      break;
+
+    default:
+      qb.orderBy("product.createdAt", "DESC"); 
   }
+
 
   const total = await qb.getCount();
   const products = await qb.skip(skip).take(pageSize).getMany();

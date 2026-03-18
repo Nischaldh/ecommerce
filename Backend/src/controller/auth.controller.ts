@@ -84,7 +84,7 @@ export const verifyUser = async (ctx: Context) => {
   ctx.body = {
     success: true,
     message: "User verified successfully.",
-    data:result.user,
+    user:result.user,
     token:result.token
   };
 };

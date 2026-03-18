@@ -69,3 +69,11 @@ export enum DeliveryStatus {
   FAILED = "FAILED",
   RETURNED = "RETURNED",
 }
+
+export enum SortBy{
+  CREATED_AT_ASC = "createdAt_asc",
+CREATED_AT_DESC = "createdAt_desc",
+PRICE_ASC = "price_asc",
+PRICE_DESC = "price_desc",
+RATING = "rating"
+}

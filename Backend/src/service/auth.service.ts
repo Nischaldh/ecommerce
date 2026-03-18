@@ -186,7 +186,6 @@ export const verifyUserService = async (validatedData: {
     createdAt: response.createdAt,
     updatedAt: response.updatedAt,
   };
-  console.log(newUser);
   const token = generateToken({
     id: user!.id,
     email: user!.email,
