@@ -1,5 +1,6 @@
 
 import * as yup from "yup";
+import { OrderItemStatus } from "../types/global.types.js";
 
 const shippingAddressSchema = yup.object({
   fullName: yup.string().trim().required("Full name is required"),
@@ -30,11 +31,8 @@ export const orderItemParamValidation = yup.object({
 
 export const updateOrderItemStatusValidation = yup.object({
   status: yup
-    .string()
-    .oneOf(
-      ["PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"],
-      "Invalid status"
-    )
+    .mixed<OrderItemStatus>()
+    .oneOf(Object.values(OrderItemStatus))
     .required("Status is required"),
 });
 
