@@ -39,7 +39,6 @@ export const loginService = async (
   }
 
   const hashedPassword = response ? response.password : env.DUMMY_HASH;
-  console.log("Hased password", hashedPassword);
   const passwordMatched = await comparePassword(password, hashedPassword);
 
   if (!passwordMatched || !response) {
@@ -59,7 +58,6 @@ export const loginService = async (
     email: user!.email,
     role: user!.role as userRole,
   });
-  console.log("Login Service - User:", user); // Debug log
   return { user, token };
 };
 

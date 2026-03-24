@@ -1,41 +1,66 @@
-import React from "react";
-import { Button } from "@/components/ui/button"
-import { Link, NavLink } from "react-router-dom";
+import { assets } from "@/assets/assests";
+import { navBarMenu } from "@/constants/Links";
+import { Link } from "react-router-dom";
+import { Button } from "./ui/button";
+import { UserDropDownMenu } from "./UserDropDown";
+import { MobileNav } from "./MobileNav";
+import { useAuth } from "@/hooks/auth/useAuth";
 
 const NavBar = () => {
+  const {  isAuthenticated } = useAuth();
   return (
-    <div className="flex items-center justify-between py-5 font-medium">
-      {/* logo */}
-      <Link to="/">
-        <p className="text-xl font-bold w-36">Logo</p>
-      </Link>
-      <ul className="hidden sm:flex gap-5 text-sm text-gray-700">
-        <NavLink to="/" className="flex flex-col items-center gap-1">
-          <p className="hover:text-gray-500">Home</p>
-          <hr className="w-4/4 border-none h-[1.5px] bg-gray-700 hidden" />
-        </NavLink>
-        <NavLink to="/products" className="flex flex-col items-center gap-1">
-          <p className="hover:text-gray-500">Products</p>
-          <hr className="w-4/4 border-none h-[1.5px] bg-gray-700 hidden" />
-        </NavLink>
-        <NavLink to="/about" className="flex flex-col items-center gap-1">
-          <p className="hover:text-gray-500">About Us</p>
-          <hr className="w-4/4 border-none h-[1.5px] bg-gray-700 hidden" />
-        </NavLink>
-        <NavLink to="/contact" className="flex flex-col items-center gap-1">
-          <p className="hover:text-gray-500">Contact</p>
-          <hr className="w-4/4 border-none h-[1.5px] bg-gray-700 hidden" />
-        </NavLink>
-      </ul>
-      {/* Right Side */}
-      <div>
-        <NavLink to="/login" className="flex flex-col items-center gap-1">
-          <Button variant="outline" className="px-4 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 hover:text-white transition cursor-pointer">
-            Login
-          </Button>
-        </NavLink>
-      </div>
-    </div>
+    <>
+      <nav>
+        {/* Nav containter */}
+        <div className="flex items-center justify-between py-4">
+          {/* left side logo */}
+          <Link className="text-2xl font-bold shrink-0" to="/">
+            <p>Ecommerce</p>
+          </Link>
+          {/* middle pages */}
+          <ul className="hidden md:flex items-center gap-6 text-gray-600">
+            {navBarMenu.map((item) => {
+              return (
+                <li key={item.id}>
+                  <Link
+                    to={item.link}
+                    className="py-1 px-3 hover:text-orange-500 transition-colors"
+                  >
+                    {item.title}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+          {/* right side icons */}
+          <div className="flex items-center  gap-3 sm:gap-6">
+            <Link className="relative group" to="/cart">
+              <img src={assets.cart} className="size-6 sm:size-7" />
+
+              <span className="absolute -right-1 -bottom-1 bg-orange-500 text-white text-[10px] leading-none w-4 h-4 flex items-center justify-center rounded-full transition-all duration-200 group-hover:bg-orange-100 group-hover:text-gray-500">
+                0
+              </span>
+            </Link>
+            {!isAuthenticated ? (
+              <Link to="/login">
+                <Button
+                  variant="outline"
+                  className="bg-orange-500 text-white hover:bg-orange-100 cursor-pointer h-7.5"
+                >
+                  Login
+                </Button>
+              </Link>
+            ) : (
+              <>
+                <UserDropDownMenu/>
+              </>
+            )}
+            <MobileNav />
+          </div>
+        </div>
+      </nav>
+      <hr/>
+    </>
   );
 };
 
