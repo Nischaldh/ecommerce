@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { navBarMenu } from "@/constants/Links";
 import { Menu, Home, ShoppingBag, Users, ListOrdered, LogOutIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { useAuth } from "@/hooks/auth/useAuth";
 
 const navIcons = {

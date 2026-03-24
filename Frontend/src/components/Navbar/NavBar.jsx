@@ -1,7 +1,7 @@
 import { assets } from "@/assets/assests";
 import { navBarMenu } from "@/constants/Links";
 import { Link } from "react-router-dom";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { UserDropDownMenu } from "./UserDropDown";
 import { MobileNav } from "./MobileNav";
 import { useAuth } from "@/hooks/auth/useAuth";
