@@ -71,8 +71,8 @@ export enum DeliveryStatus {
 }
 
 export enum SortBy{
-  CREATED_AT_ASC = "createdAt_asc",
-CREATED_AT_DESC = "createdAt_desc",
+CREATED_AT_ASC = "created_at_asc",
+CREATED_AT_DESC = "created_at_desc",
 PRICE_ASC = "price_asc",
 PRICE_DESC = "price_desc",
 RATING = "rating"

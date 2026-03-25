@@ -9,6 +9,15 @@ export const getAddressesService = async () => {
   }
 };
 
+export const getAddressByIdService = async (id) => {
+  try {
+    const res = await api.get(`/addresses/${id}`);
+    return res.data;
+  } catch (err) {
+    return { success: false, message: err.response?.data?.message || "Failed to fetch address" };
+  }
+};
+
 export const createAddressService = async (data) => {
   try {
     const res = await api.post("/addresses", data);

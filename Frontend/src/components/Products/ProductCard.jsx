@@ -18,7 +18,7 @@ const ProductCard = ({ product }) => {
       className="group flex flex-col bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-md transition-shadow duration-300"
     >
       {/* Image */}
-      <div className="w-full aspect-[4/3] overflow-hidden bg-gray-50">
+      <div className="w-full aspect-4/3 overflow-hidden bg-gray-50">
         <img
           src={product.primaryImage}
           alt={product.name}
@@ -106,7 +106,7 @@ const ProductCard = ({ product }) => {
               )}
             </div>
 
-            <span className="text-[11px] sm:text-xs text-gray-500 group-hover/seller:text-orange-500 transition-colors truncate max-w-[80px]">
+            <span className="text-[11px] sm:text-xs text-gray-500 group-hover/seller:text-orange-500 transition-colors truncate max-w-20">
               {product.seller?.name}
             </span>
           </Link>

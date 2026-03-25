@@ -1,4 +1,4 @@
-import Footer from "@/components/Home/Footer";
+import Footer from "@/components/Footer";
 import Hero from "@/components/Home/Hero";
 import ProductSection from "@/components/Home/ProductSection";
 import { useHomeProducts } from "@/hooks/products/useHomeProducts";
@@ -26,7 +26,6 @@ const Home = () => {
         loading={loading}
         viewMoreLink="/products?sort=rating"
       />
-      <Footer />
     </div>
   );
 };

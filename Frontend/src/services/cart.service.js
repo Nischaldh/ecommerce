@@ -18,18 +18,18 @@ export const addToCartService = async (productId, quantity) => {
   }
 };
 
-export const updateCartItemService = async (itemId, quantity) => {
+export const updateCartItemService = async (id, quantity) => {
   try {
-    const res = await api.patch(`/cart/item/${itemId}`, { quantity });
+    const res = await api.patch(`/cart/item/${id}`, { quantity });
     return res.data;
   } catch (err) {
     return { success: false, message: err.response?.data?.message || "Failed to update cart item" };
   }
 };
 
-export const removeCartItemService = async (itemId) => {
+export const removeCartItemService = async (id) => {
   try {
-    const res = await api.delete(`/cart/item/${itemId}`);
+    const res = await api.delete(`/cart/item/${id}`);
     return res.data;
   } catch (err) {
     return { success: false, message: err.response?.data?.message || "Failed to remove cart item" };

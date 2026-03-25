@@ -22,7 +22,7 @@ const Hero = () => {
           <img
             src={assets.about}
             alt="Hero"
-            className="w-[320px] sm:w-[420px] md:w-[550px] lg:w-[650px] xl:w-[750px] object-contain"
+            className="w-[320px] sm:w-105 md:w-137.5 lg:w-162.5 xl:w-187.5 object-contain"
           />
         </div>
       </div>

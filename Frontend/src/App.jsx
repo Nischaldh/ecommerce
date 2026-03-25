@@ -6,6 +6,9 @@ import Signup from './pages/AuthPages/Signup'
 import Login from './pages/AuthPages/Login'
 import ForgotPassword from './pages/AuthPages/ForgotPassword'
 import VerifyEmail from './pages/AuthPages/VerifyEmail'
+import Products from './pages/Products'
+import Footer from './components/Footer'
+
 
 const App = () => {
   return (
@@ -13,11 +16,13 @@ const App = () => {
       <NavBar/>
       <Routes>
         <Route path="/" element={<Home/>}/>
+        <Route path="/products" element = {<Products/>}/>
         <Route path='/login' element={<Login/>} />
         <Route path='/signup' element={<Signup/>} />
         <Route path='/forgot-password' element={<ForgotPassword/>} />
         <Route path="/verify-email" element={<VerifyEmail />} />
       </Routes>
+      <Footer />
     </div>
   )
 }

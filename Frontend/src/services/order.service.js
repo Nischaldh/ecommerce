@@ -11,7 +11,7 @@ export const placeOrderService = async (data) => {
 
 export const getMyOrdersService = async () => {
   try {
-    const res = await api.get("/orders/me");
+    const res = await api.get("/orders");
     return res.data;
   } catch (err) {
     return { success: false, message: err.response?.data?.message || "Failed to fetch orders" };
@@ -36,7 +36,6 @@ export const cancelOrderService = async (id) => {
   }
 };
 
-// seller
 export const getSellerOrderItemsService = async () => {
   try {
     const res = await api.get("/orders/seller/items");
@@ -52,5 +51,14 @@ export const updateOrderItemStatusService = async (itemId, status) => {
     return res.data;
   } catch (err) {
     return { success: false, message: err.response?.data?.message || "Failed to update status" };
+  }
+};
+
+export const updateDeliveryService = async (itemId, data) => {
+  try {
+    const res = await api.patch(`/orders/seller/items/${itemId}/delivery`, data);
+    return res.data;
+  } catch (err) {
+    return { success: false, message: err.response?.data?.message || "Failed to update delivery" };
   }
 };

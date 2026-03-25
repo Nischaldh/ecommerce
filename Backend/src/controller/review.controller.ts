@@ -1,4 +1,3 @@
-// src/controller/review.controller.ts
 import type { Context } from "koa";
 import {
   createReviewValidation,
