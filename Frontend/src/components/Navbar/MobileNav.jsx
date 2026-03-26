@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useAuth } from "@/hooks/auth/useAuth";
 
+
 const navIcons = {
   "Home": <Home className="size-7" />,
   "Products": <ShoppingBag className="size-7" />,
@@ -19,6 +20,7 @@ const navIcons = {
 
 export const MobileNav = () => {
   const { user, isAuthenticated, logout } = useAuth();
+  
 
   return (
     <Sheet>

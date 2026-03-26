@@ -6,6 +6,8 @@ const reviewSlice = createSlice({
     // reviews for currently viewed product
     productReviews: [],
     productReviewsTotal: 0,
+    submitRating: 0,  
+    hoverRating: 0,
     // logged in user's reviews
     userReviews: [],
     userReviewsTotal: 0,
@@ -47,6 +49,13 @@ const reviewSlice = createSlice({
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
+        setSubmitRating: (state, action) => { 
+      state.submitRating = action.payload;
+    },
+    setHoverRating: (state, action) => { 
+      state.hoverRating = action.payload;
+    },
+
   },
 });
 
@@ -57,5 +66,7 @@ export const {
   removeReview,
   setUserReviews,
   setLoading,
+  setSubmitRating, 
+  setHoverRating,   
 } = reviewSlice.actions;
 export default reviewSlice.reducer;

@@ -1,15 +1,17 @@
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Star, Package } from "lucide-react";
 import { timeAgo } from "@/lib/formatedDate";
 
 
 const ProductListCard = ({ product }) => {
+  const navigate = useNavigate();
+
   return (
-    <Link
-      to={`/products/${product.id}`}
-      className="group flex gap-3 sm:gap-4 bg-white border border-gray-100 rounded-xl p-3 hover:shadow-md transition-shadow duration-300 w-full"
+    <div
+      onClick={() => navigate(`/products/${product.id}`)}
+      className="group flex gap-3 sm:gap-4 bg-white border border-gray-100 rounded-xl p-3 hover:shadow-md transition-shadow duration-300 w-full cursor-pointer"
     >
-      {/* Image — fixed size, never shrinks */}
+      {/* Image */}
       <div className="w-28 sm:w-36 md:w-44 shrink-0 aspect-square rounded-lg overflow-hidden bg-gray-50">
         <img
           src={product.primaryImage}
@@ -18,27 +20,19 @@ const ProductListCard = ({ product }) => {
         />
       </div>
 
-      {/* Content — takes full remaining width */}
+      {/* Content */}
       <div className="flex flex-col flex-1 gap-1.5 min-w-0">
-
-        {/* Name */}
         <h3 className="font-semibold text-gray-900 text-sm sm:text-base line-clamp-1">
           {product.name}
         </h3>
-
-        {/* Description */}
         <p className="text-xs sm:text-sm text-gray-500 line-clamp-2 leading-relaxed">
           {product.description}
         </p>
-
-        {/* Price */}
         <p className="text-orange-500 font-bold text-sm sm:text-base">
           Rs. {Number(product.price).toLocaleString("en-NP")}
         </p>
 
-        {/* Rating + Stock in one row */}
         <div className="flex items-center gap-3 flex-wrap">
-          {/* Rating */}
           <div className="flex items-center gap-1">
             {Array.from({ length: 5 }).map((_, i) => (
               <Star
@@ -55,7 +49,6 @@ const ProductListCard = ({ product }) => {
             </span>
           </div>
 
-          {/* Stock */}
           <div className="flex items-center gap-1">
             <Package className="size-3 text-gray-400" />
             <span className={`text-xs font-medium ${
@@ -69,10 +62,9 @@ const ProductListCard = ({ product }) => {
             </span>
           </div>
         </div>
-        <p className="text-xs sm:text-sm text-gray-500 line-clamp-2 leading-relaxed">{product.category}</p>
 
-        {/* Seller + Time — pushed to bottom */}
         <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-100">
+          {/* seller link  */}
           <Link
             to={`/seller/${product.seller?.id}`}
             onClick={(e) => e.stopPropagation()}
@@ -80,11 +72,7 @@ const ProductListCard = ({ product }) => {
           >
             <div className="size-5 sm:size-6 rounded-full bg-orange-100 overflow-hidden flex items-center justify-center shrink-0">
               {product.seller?.profilePic ? (
-                <img
-                  src={product.seller.profilePic}
-                  alt={product.seller.name}
-                  className="w-full h-full object-cover"
-                />
+                <img src={product.seller.profilePic} alt={product.seller.name} className="w-full h-full object-cover" />
               ) : (
                 <span className="text-orange-500 text-[10px] font-bold">
                   {product.seller?.name?.charAt(0).toUpperCase()}
@@ -101,7 +89,7 @@ const ProductListCard = ({ product }) => {
           </span>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 

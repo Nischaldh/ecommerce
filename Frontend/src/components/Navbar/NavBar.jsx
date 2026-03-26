@@ -5,9 +5,11 @@ import { Button } from "../ui/button";
 import { UserDropDownMenu } from "./UserDropDown";
 import { MobileNav } from "./MobileNav";
 import { useAuth } from "@/hooks/auth/useAuth";
+import { useCart } from "@/hooks/cart/useCart";
 
 const NavBar = () => {
   const {  isAuthenticated } = useAuth();
+  const {totalItems} = useCart();
   return (
     <>
       <nav>
@@ -38,7 +40,7 @@ const NavBar = () => {
               <img src={assets.cart} className="size-6 sm:size-7" />
 
               <span className="absolute -right-1 -bottom-1 bg-orange-500 text-white text-[10px] leading-none w-4 h-4 flex items-center justify-center rounded-full transition-all duration-200 group-hover:bg-orange-100 group-hover:text-gray-500">
-                0
+                {totalItems||"0"}
               </span>
             </Link>
             {!isAuthenticated ? (

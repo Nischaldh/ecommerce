@@ -8,6 +8,7 @@ import ForgotPassword from './pages/AuthPages/ForgotPassword'
 import VerifyEmail from './pages/AuthPages/VerifyEmail'
 import Products from './pages/Products'
 import Footer from './components/Footer'
+import ProductDetail from './pages/ProductDetails'
 
 
 const App = () => {
@@ -21,6 +22,7 @@ const App = () => {
         <Route path='/signup' element={<Signup/>} />
         <Route path='/forgot-password' element={<ForgotPassword/>} />
         <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/products/:id" element={<ProductDetail/>} />
       </Routes>
       <Footer />
     </div>

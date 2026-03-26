@@ -48,7 +48,7 @@ export const verifyEmailChange = async (ctx: Context) => {
 
 
 export const getMe = async (ctx:Context)=>{
-    const userId = ctx.state.user.userId;
+    const userId = ctx.state.user.id;
     const result = await getMeService(userId);
     ctx.status = 200;
     ctx.body = {
