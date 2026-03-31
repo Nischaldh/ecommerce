@@ -26,3 +26,24 @@ export const updateProfileValidation = yup.object({
 export const verifyEmailOtpValidation = yup.object({
   otp: yup.string().required("OTP is required"),
 });
+
+export const getSellersValidation = yup.object({
+  name: yup.string().optional(),
+  page: yup.number().min(1).optional(),
+  pageSize: yup.number().min(1).optional(),
+});
+
+export const sellerParamValidation = yup.object({
+  id: yup.string().uuid("Invalid seller id").required(),
+});
+
+export const getSellerProductsValidation = yup.object({
+  name: yup.string().optional(),
+  minPrice: yup.number().min(0).optional(),
+  maxPrice: yup.number().min(0).optional(),
+  sort: yup.string().optional(),
+  minRating: yup.number().min(0).max(5).optional(),
+  page: yup.number().min(1).optional(),
+  pageSize: yup.number().min(1).optional(),
+});
+

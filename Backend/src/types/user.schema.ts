@@ -26,3 +26,20 @@ export type UpdateProfileInput = {
   confirmNewPassword?:string,
   newEmail?: string;
 }
+
+export interface ISellerResponse {
+  id: string;
+  name: string;
+  profilePic: string | null;
+  createdAt: Date;
+}
+
+export interface ISellerDetailResponse {
+  id: string;
+  name: string;
+  profilePic: string | null;
+  createdAt: Date;
+  totalProducts: number;
+  averageRating: number;
+}
+
