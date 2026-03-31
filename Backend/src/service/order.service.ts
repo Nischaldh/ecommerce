@@ -3,7 +3,11 @@ import { Order } from "../entity/Order.js";
 import { Cart } from "../entity/Cart.js";
 import { CartItem } from "../entity/CartItem.js";
 import { Product } from "../entity/Product.js";
-import { BadRequestError, ForbiddenError, NotFoundError } from "../lib/erros.js";
+import {
+  BadRequestError,
+  ForbiddenError,
+  NotFoundError,
+} from "../lib/erros.js";
 import {
   ICreateOrder,
   IDeliveryResponse,
@@ -11,9 +15,18 @@ import {
   IOrderResponse,
   IUpdateDelivery,
 } from "../types/order.schema.js";
-import { allowedTransitions, mapDelivery, mapOrder, mapOrderItem } from "../lib/utlis.js";
+import {
+  allowedTransitions,
+  mapDelivery,
+  mapOrder,
+  mapOrderItem,
+} from "../lib/utlis.js";
 import { OrderItem } from "../entity/OrderItems.js";
-import { OrderItemStatus, OrderStatus, PaymentStatus } from "../types/global.types.js";
+import {
+  OrderItemStatus,
+  OrderStatus,
+  PaymentStatus,
+} from "../types/global.types.js";
 import { Delivery } from "../entity/Delivery.js";
 
 const orderRepository = AppDataSource.getRepository(Order);
@@ -21,12 +34,10 @@ const orderItemRepository = AppDataSource.getRepository(OrderItem);
 const cartRepository = AppDataSource.getRepository(Cart);
 const deliveryRepository = AppDataSource.getRepository(Delivery);
 
-
 export const placeOrderService = async (
   userId: string,
-  data: ICreateOrder
+  data: ICreateOrder,
 ): Promise<{ order: IOrderResponse; success: boolean }> => {
-
   const cart = await cartRepository.findOne({
     where: { user_id: userId },
     relations: ["items", "items.product"],
@@ -48,14 +59,10 @@ export const placeOrderService = async (
     const product = cartItem.product;
 
     if (!product || product.deleted) {
-      throw new BadRequestError(
-        `Product is no longer available`
-      );
+      throw new BadRequestError(`Product is no longer available`);
     }
     if (product.stock < cartItem.quantity) {
-      throw new BadRequestError(
-        `Insufficient stock for "${product.name}"`
-      );
+      throw new BadRequestError(`Insufficient stock for "${product.name}"`);
     }
   }
 
@@ -71,8 +78,8 @@ export const placeOrderService = async (
       const orderItem = manager.create(OrderItem, {
         product_id: product.id,
         seller_id: product.seller_id,
-        productName: product.name,        
-        priceAtPurchase: product.price,   
+        productName: product.name,
+        priceAtPurchase: product.price,
         quantity: cartItem.quantity,
         subtotal,
         status: OrderItemStatus.PENDING,
@@ -84,7 +91,7 @@ export const placeOrderService = async (
         Product,
         { id: product.id },
         "stock",
-        cartItem.quantity
+        cartItem.quantity,
       );
     }
 
@@ -100,11 +107,11 @@ export const placeOrderService = async (
     const savedOrder = await manager.save(Order, order);
     await manager.delete(
       CartItem,
-      itemsToOrder.map((i) => i.id)
+      itemsToOrder.map((i) => i.id),
     );
     const fullOrder = await manager.findOneOrFail(Order, {
       where: { id: savedOrder.id },
-      relations: ["items"],
+      relations: ["items","items.product"],
     });
 
     return { order: mapOrder(fullOrder), success: true };
@@ -112,27 +119,32 @@ export const placeOrderService = async (
 };
 
 export const getMyOrdersService = async (
-  userId: string
+  userId: string,
+  query: { status?: string; page?: number; pageSize?: number },
 ): Promise<{ orders: IOrderResponse[]; total: number }> => {
+  const { status, page = 1, pageSize = 10 } = query;
+  const skip = (page - 1) * pageSize;
+  const where: any = { user_id: userId };
+  if (status) where.status = status;
 
   const [orders, total] = await orderRepository.findAndCount({
-    where: { user_id: userId },
-    relations: ["items"],
+    where,
+    relations: ["items", "items.delivery","items.product"],
     order: { createdAt: "DESC" },
+    skip,
+    take: pageSize,
   });
 
   return { orders: orders.map(mapOrder), total };
 };
 
-
 export const getOrderByIdService = async (
   orderId: string,
-  userId: string
+  userId: string,
 ): Promise<{ order: IOrderResponse }> => {
-
   const order = await orderRepository.findOne({
     where: { id: orderId },
-    relations: ["items"],
+    relations: ["items", "items.product", "items.delivery"],
   });
 
   if (!order) throw new NotFoundError("Order not found");
@@ -147,9 +159,8 @@ export const getOrderByIdService = async (
 
 export const cancelOrderService = async (
   orderId: string,
-  userId: string
+  userId: string,
 ): Promise<{ success: boolean }> => {
-
   return await AppDataSource.transaction(async (manager) => {
     const order = await manager.findOne(Order, {
       where: { id: orderId, user_id: userId },
@@ -165,11 +176,11 @@ export const cancelOrderService = async (
     const hasShipped = order.items.some(
       (i) =>
         i.status === OrderItemStatus.SHIPPED ||
-        i.status === OrderItemStatus.DELIVERED
+        i.status === OrderItemStatus.DELIVERED,
     );
     if (hasShipped) {
       throw new BadRequestError(
-        "Cannot cancel — one or more items have already shipped"
+        "Cannot cancel — one or more items have already shipped",
       );
     }
 
@@ -183,7 +194,7 @@ export const cancelOrderService = async (
         Product,
         { id: item.product_id },
         "stock",
-        item.quantity
+        item.quantity,
       );
     }
 
@@ -191,29 +202,23 @@ export const cancelOrderService = async (
   });
 };
 
-
 export const getSellerOrderItemsService = async (
-  sellerId: string
+  sellerId: string,
 ): Promise<{ items: IOrderItemResponse[]; total: number }> => {
-
   const [items, total] = await orderItemRepository.findAndCount({
     where: { seller_id: sellerId },
-    relations: ["order"],
+    relations: ["order", "product", "delivery"],
     order: { createdAt: "DESC" },
   });
 
   return { items: items.map(mapOrderItem), total };
 };
 
-
-
-
 export const updateOrderItemStatusService = async (
   itemId: string,
   sellerId: string,
-  newStatus: OrderItemStatus
+  newStatus: OrderItemStatus,
 ): Promise<{ item: IOrderItemResponse }> => {
-
   const item = await orderItemRepository.findOne({
     where: { id: itemId, seller_id: sellerId },
     relations: ["order"],
@@ -223,7 +228,7 @@ export const updateOrderItemStatusService = async (
 
   if (!allowedTransitions[item.status].includes(newStatus)) {
     throw new BadRequestError(
-      `Cannot transition from ${item.status} to ${newStatus}`
+      `Cannot transition from ${item.status} to ${newStatus}`,
     );
   }
 
@@ -233,7 +238,7 @@ export const updateOrderItemStatusService = async (
       where: { order_id: item.order_id },
     });
     const allDelivered = allItems.every(
-      (i) => i.id === item.id || i.status === OrderItemStatus.DELIVERED
+      (i) => i.id === item.id || i.status === OrderItemStatus.DELIVERED,
     );
     if (allDelivered) {
       await orderRepository.update(item.order_id, {
@@ -249,9 +254,8 @@ export const updateOrderItemStatusService = async (
 export const updateDeliveryService = async (
   orderItemId: string,
   sellerId: string,
-  data: IUpdateDelivery
+  data: IUpdateDelivery,
 ): Promise<{ delivery: IDeliveryResponse }> => {
-
   // verify the order item belongs to this seller
   const orderItem = await orderItemRepository.findOne({
     where: { id: orderItemId, seller_id: sellerId },
@@ -262,12 +266,14 @@ export const updateDeliveryService = async (
 
   if (orderItem.status === OrderItemStatus.PENDING) {
     throw new BadRequestError(
-      "Cannot update delivery info before processing the order item"
+      "Cannot update delivery info before processing the order item",
     );
   }
 
   if (orderItem.status === OrderItemStatus.CANCELLED) {
-    throw new BadRequestError("Cannot update delivery info for a cancelled item");
+    throw new BadRequestError(
+      "Cannot update delivery info for a cancelled item",
+    );
   }
 
   const delivery = orderItem.delivery;

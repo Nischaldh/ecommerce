@@ -20,6 +20,7 @@ export interface IOrderItemResponse {
   product_id: string;
   seller_id: string;
   productName: string;
+  primaryImage: string;
   priceAtPurchase: number;
   quantity: number;
   subtotal: number;

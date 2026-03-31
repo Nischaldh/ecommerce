@@ -13,6 +13,7 @@ import Cart from "./pages/Cart";
 import PublicRoute from "./components/Routing/PublicRoute";
 import ProtectedRoute from "./components/Routing/ProtectedRoute";
 import Checkout from "./pages/Checkout";
+import Orders from "./pages/Orders";
 
 const App = () => {
   return (
@@ -57,6 +58,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <Checkout />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute>
+              <Orders />
             </ProtectedRoute>
           }
         />

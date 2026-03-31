@@ -9,9 +9,9 @@ export const placeOrderService = async (data) => {
   }
 };
 
-export const getMyOrdersService = async () => {
+export const getMyOrdersService = async (params) => {
   try {
-    const res = await api.get("/orders");
+    const res = await api.get("/orders",{params});
     return res.data;
   } catch (err) {
     return { success: false, message: err.response?.data?.message || "Failed to fetch orders" };

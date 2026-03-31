@@ -7,6 +7,11 @@ const orderSlice = createSlice({
     total: 0,
     selectedOrder: null,
     loading: false,
+    filters: {
+      status: "",
+      page: 1,
+      pageSize: 10,
+    },
     // seller
     sellerItems: [],
     sellerTotal: 0,
@@ -30,6 +35,16 @@ const orderSlice = createSlice({
         state.selectedOrder.status = action.payload.status;
       }
     },
+    setOrderFilters: (state, action) => {
+      state.filters = { ...state.filters, ...action.payload, page: 1 };
+    },
+    setOrderPage: (state, action) => {
+      state.filters.page = action.payload;
+    },
+    resetOrderFilters: (state) => {
+      state.filters = { status: "", page: 1, pageSize: 10 };
+    },
+
     setSellerItems: (state, action) => {
       state.sellerItems = action.payload.items;
       state.sellerTotal = action.payload.total;
@@ -49,6 +64,9 @@ export const {
   setSelectedOrder,
   addOrder,
   updateOrderStatus,
+  setOrderFilters,
+  setOrderPage,
+  resetOrderFilters,
   setSellerItems,
   updateSellerItemStatus,
   setLoading,

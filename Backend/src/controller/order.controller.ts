@@ -1,6 +1,20 @@
 import type { Context } from "koa";
-import { createOrderValidation, orderItemParamValidation, orderParamValidation, updateDeliveryValidation, updateOrderItemStatusValidation } from "../validations/order.validation.js";
-import { cancelOrderService, getMyOrdersService, getOrderByIdService, getSellerOrderItemsService, placeOrderService, updateDeliveryService, updateOrderItemStatusService } from "../service/order.service.js";
+import {
+  createOrderValidation,
+  orderItemParamValidation,
+  orderParamValidation,
+  updateDeliveryValidation,
+  updateOrderItemStatusValidation,
+} from "../validations/order.validation.js";
+import {
+  cancelOrderService,
+  getMyOrdersService,
+  getOrderByIdService,
+  getSellerOrderItemsService,
+  placeOrderService,
+  updateDeliveryService,
+  updateOrderItemStatusService,
+} from "../service/order.service.js";
 import { OrderItemStatus } from "../types/global.types.js";
 
 export const placeOrder = async (ctx: Context) => {
@@ -19,7 +33,17 @@ export const placeOrder = async (ctx: Context) => {
 
 export const getMyOrders = async (ctx: Context) => {
   const userId = ctx.state.user.id;
-  const result = await getMyOrdersService(userId);
+  const { status, page, pageSize } = ctx.request.query as {
+    status?: string;
+    page?: string;
+    pageSize?: string;
+  };
+
+  const result = await getMyOrdersService(userId, {
+    status,
+    page: page ? parseInt(page) : 1,
+    pageSize: pageSize ? parseInt(pageSize) : 10,
+  });
   ctx.status = 200;
   ctx.body = {
     success: true,
@@ -65,12 +89,12 @@ export const updateOrderItemStatus = async (ctx: Context) => {
   const { itemId } = await orderItemParamValidation.validate(ctx.params);
   const sellerId = ctx.state.user.id;
   const { status } = await updateOrderItemStatusValidation.validate(
-    ctx.request.body
+    ctx.request.body,
   );
   const result = await updateOrderItemStatusService(
     itemId,
     sellerId,
-    status as OrderItemStatus
+    status as OrderItemStatus,
   );
   ctx.status = 200;
   ctx.body = {
@@ -78,7 +102,6 @@ export const updateOrderItemStatus = async (ctx: Context) => {
     item: result.item,
   };
 };
-
 
 export const updateDelivery = async (ctx: Context) => {
   const { itemId } = await orderItemParamValidation.validate(ctx.params);
