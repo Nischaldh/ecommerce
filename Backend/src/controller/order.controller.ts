@@ -13,9 +13,12 @@ import {
   getSellerOrderItemsService,
   placeOrderService,
   updateDeliveryService,
+  updateOrderAddressService,
   updateOrderItemStatusService,
 } from "../service/order.service.js";
 import { OrderItemStatus } from "../types/global.types.js";
+import { createAddressValidation } from "../validations/address.validation.js";
+import { ICreateAddress } from "../types/address.schema.js";
 
 export const placeOrder = async (ctx: Context) => {
   const userId = ctx.state.user.id;
@@ -117,3 +120,23 @@ export const updateDelivery = async (ctx: Context) => {
     delivery: result.delivery,
   };
 };
+
+export const updateOrderAddress = async (ctx: Context) => {
+  const { id } = await orderParamValidation.validate(ctx.params);
+  const userId = ctx.state.user.id;
+
+  const data = await createAddressValidation.validate(
+    ctx.request.body,
+    { stripUnknown: true },
+  ) as ICreateAddress;
+
+  const result = await updateOrderAddressService(id, userId, data);
+
+  ctx.status = 200;
+  ctx.body = {
+    success: true,
+    message: "Shipping address updated successfully",
+    order: result.order,
+  };
+};
+

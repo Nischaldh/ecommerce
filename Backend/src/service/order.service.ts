@@ -28,6 +28,7 @@ import {
   PaymentStatus,
 } from "../types/global.types.js";
 import { Delivery } from "../entity/Delivery.js";
+import { ICreateAddress } from "../types/address.schema.js";
 
 const orderRepository = AppDataSource.getRepository(Order);
 const orderItemRepository = AppDataSource.getRepository(OrderItem);
@@ -144,7 +145,7 @@ export const getOrderByIdService = async (
 ): Promise<{ order: IOrderResponse }> => {
   const order = await orderRepository.findOne({
     where: { id: orderId },
-    relations: ["items", "items.product", "items.delivery"],
+    relations: ["items", "items.product", "items.delivery","items.seller"],
   });
 
   if (!order) throw new NotFoundError("Order not found");
@@ -256,7 +257,7 @@ export const updateDeliveryService = async (
   sellerId: string,
   data: IUpdateDelivery,
 ): Promise<{ delivery: IDeliveryResponse }> => {
-  // verify the order item belongs to this seller
+  
   const orderItem = await orderItemRepository.findOne({
     where: { id: orderItemId, seller_id: sellerId },
     relations: ["delivery"],
@@ -288,4 +289,38 @@ export const updateDeliveryService = async (
 
   const saved = await deliveryRepository.save(delivery);
   return { delivery: mapDelivery(saved) };
+};
+
+// service/order.service.ts — add to existing file
+export const updateOrderAddressService = async (
+  orderId: string,
+  userId: string,
+  shippingAddress: ICreateAddress,
+): Promise<{ success: boolean; order: IOrderResponse }> => {
+  const order = await orderRepository.findOne({
+    where: { id: orderId, user_id: userId },
+    relations: ["items", "items.delivery", "items.product", "items.seller"],
+  });
+
+  if (!order) throw new NotFoundError("Order not found");
+
+  if (order.status !== OrderStatus.PENDING) {
+    throw new BadRequestError(
+      "Shipping address can only be updated on pending orders",
+    );
+  }
+
+  order.shippingAddress = {
+    ...order.shippingAddress,
+    ...shippingAddress,
+  };
+
+  const saved = await orderRepository.save(order);
+
+  const fullOrder = await orderRepository.findOneOrFail({
+    where: { id: saved.id },
+    relations: ["items", "items.delivery", "items.product", "items.seller"],
+  });
+
+  return { success: true, order: mapOrder(fullOrder) };
 };

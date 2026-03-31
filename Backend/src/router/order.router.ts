@@ -7,6 +7,7 @@ import {
   getSellerOrders,
   placeOrder,
   updateDelivery,
+  updateOrderAddress,
   updateOrderItemStatus,
 } from "../controller/order.controller.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
@@ -20,7 +21,7 @@ orderRouter.post("/", placeOrder);
 orderRouter.get("/", getMyOrders);
 orderRouter.get("/:id", getOrderById);
 orderRouter.patch("/:id/cancel", cancelOrder);
-
+orderRouter.patch("/:id/address", updateOrderAddress);
 
 orderRouter.use(sellerAuth)
 // seller

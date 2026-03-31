@@ -62,3 +62,15 @@ export const updateDeliveryService = async (itemId, data) => {
     return { success: false, message: err.response?.data?.message || "Failed to update delivery" };
   }
 };
+
+export const updateOrderAddressService = async (id, data) => {
+  try {
+    const res = await api.patch(`/orders/${id}/address`, data);
+    return res.data;
+  } catch (err) {
+    return {
+      success: false,
+      message: err.response?.data?.message || "Failed to update address",
+    };
+  }
+};

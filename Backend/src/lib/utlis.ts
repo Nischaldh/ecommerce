@@ -63,6 +63,8 @@ export const mapOrderItem = (item: OrderItem): IOrderItemResponse => ({
   seller_id: item.seller_id,
   productName: item.productName,
   primaryImage: item.product?.primaryImage ?? "",
+  sellerName: item.seller?.name ?? "",           
+  sellerProfilePic: item.seller?.profilePic ?? null, 
   priceAtPurchase: item.priceAtPurchase,
   quantity: item.quantity,
   subtotal: item.subtotal,

@@ -22,6 +22,8 @@ export interface IOrderItemResponse {
   productName: string;
   primaryImage: string;
   priceAtPurchase: number;
+  sellerName: string;        
+  sellerProfilePic: string | null; 
   quantity: number;
   subtotal: number;
   status: string;
