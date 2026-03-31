@@ -51,6 +51,8 @@ export const mapCartItem = (item: CartItem): ICartItemResponse => ({
     name: item.product.name,
     price: Number(item.product.price),
     primaryImage: item.product.primaryImage,
+    sellerId: item.product.seller.id,
+    sellerName: item.product.seller.name,
   },
 });
 

@@ -13,8 +13,8 @@ const productRepository = AppDataSource.getRepository(Product);
 export const addToCartService = async (
   userId: string,
   productId: string,
-  quantity: number
-): Promise<{success:boolean, cartItem: ICartItemResponse}> => {
+  quantity: number,
+): Promise<{ success: boolean; cartItem: ICartItemResponse }> => {
   const product = await productRepository.findOne({ where: { id: productId } });
   if (!product || product.deleted) throw new NotFoundError("Product not found");
   if (product.stock < quantity) throw new BadRequestError("Not enough stock");
@@ -26,7 +26,7 @@ export const addToCartService = async (
   }
   let item = await cartItemRepository.findOne({
     where: { cart_id: cart.id, product_id: productId },
-    relations: ["cart", "product"],
+    relations: ["cart", "product", "product.seller"],
   });
 
   if (item) {
@@ -41,18 +41,20 @@ export const addToCartService = async (
     await cartItemRepository.save(item);
     item = await cartItemRepository.findOneOrFail({
       where: { id: item.id },
-      relations: ["product"],
+      relations: ["product", "product.seller"],
     });
   }
   const mappedCart = mapCartItem(item);
 
-  return {success:true, cartItem: mappedCart};
+  return { success: true, cartItem: mappedCart };
 };
 
-export const getCartService = async (userId: string): Promise<ICartResponse | null> => {
+export const getCartService = async (
+  userId: string,
+): Promise<ICartResponse | null> => {
   const cart = await cartRepository.findOne({
     where: { user_id: userId },
-    relations: ["items", "items.product"],
+    relations: ["items", "items.product", "items.product.seller"],
   });
 
   if (!cart) return null;
@@ -65,13 +67,11 @@ export const getCartService = async (userId: string): Promise<ICartResponse | nu
   };
 };
 
-
 export const updateCartItemService = async (
   cartItemId: string,
   userId: string,
-  quantity: number
-):Promise<{ success: true; item: ICartItemResponse }>  => {
-
+  quantity: number,
+): Promise<{ success: true; item: ICartItemResponse }> => {
   const item = await cartItemRepository.findOne({
     where: { id: cartItemId },
     relations: ["cart"],
@@ -86,16 +86,19 @@ export const updateCartItemService = async (
   }
 
   item.quantity = quantity;
-  const updatedItem = await cartItemRepository.save(item);
-  console.log(updatedItem)
-  return { success: true , item:updatedItem}
+  await cartItemRepository.save(item);
+  const updatedItem = await cartItemRepository.findOneOrFail({
+    where: { id: cartItemId },
+    relations: ["product", "product.seller"],
+  });
+
+  return { success: true, item: mapCartItem(updatedItem) };
 };
 
 export const removeCartItemService = async (
   cartItemId: string,
-  userId: string
-):Promise<{success:boolean}> => {
-
+  userId: string,
+): Promise<{ success: boolean }> => {
   const item = await cartItemRepository.findOne({
     where: { id: cartItemId },
     relations: ["cart"],

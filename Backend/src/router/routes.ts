@@ -5,6 +5,7 @@ import productRouter from "./product.router.js";
 import cartRouter  from "./cart.router.js";
 import orderRouter from "./order.router.js";
 import reviewRouter from "./review.router.js";
+import addressRouter from "./address.router.js";
 
 const router = new Router({prefix:"/api"});
 
@@ -19,5 +20,7 @@ router.use(cartRouter.routes(), cartRouter.allowedMethods());
 router.use(orderRouter.routes(),orderRouter.allowedMethods());
 
 router.use(reviewRouter.routes(),reviewRouter.allowedMethods());
+
+router.use(addressRouter.routes(), addressRouter.allowedMethods());
 
 export default router;

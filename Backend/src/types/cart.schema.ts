@@ -18,6 +18,8 @@ export interface ICartItemResponse {
     name: string;
     price: number;
     primaryImage: string;
+    sellerId:string;
+    sellerName:string;
   };
 }
 
