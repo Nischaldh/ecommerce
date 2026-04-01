@@ -16,18 +16,17 @@ import { sellerAuth } from "../middleware/seller.auth.js";
 const orderRouter = new Router({ prefix: "/orders" });
 
 orderRouter.use(authMiddleware)
+
+// seller
+orderRouter.get("/seller/items", sellerAuth, getSellerOrders);
+orderRouter.patch("/seller/items/:itemId/status", sellerAuth, updateOrderItemStatus);
+orderRouter.patch("/seller/items/:itemId/delivery", sellerAuth, updateDelivery);
+
 // buyer
 orderRouter.post("/", placeOrder);
 orderRouter.get("/", getMyOrders);
 orderRouter.get("/:id", getOrderById);
 orderRouter.patch("/:id/cancel", cancelOrder);
 orderRouter.patch("/:id/address", updateOrderAddress);
-
-orderRouter.use(sellerAuth)
-// seller
-orderRouter.get("/seller/items", getSellerOrders);
-orderRouter.patch("/seller/items/:itemId/status", updateOrderItemStatus);
-orderRouter.patch("/seller/items/:itemId/delivery",updateDelivery);
-
 
 export default orderRouter;

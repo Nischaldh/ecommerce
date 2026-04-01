@@ -16,6 +16,8 @@ export const useProductDetail = () => {
 
   const [selectedImage, setSelectedImage] = useState(null);
   const [addingToCart, setAddingToCart] = useState(false);
+  const [buyingNow, setBuyingNow] = useState(false);
+
 
   useEffect(() => {
     const load = async () => {
@@ -47,10 +49,21 @@ export const useProductDetail = () => {
     setAddingToCart(false);
   };
 
-  const handleBuyNow = () => {
-    if (!isAuthenticated) { toast.error("Please Login to buy the item."); return; }
-    navigate(`/checkout?productId=${selectedProduct.id}`);
+   const handleBuyNow = async () => {
+    if (!isAuthenticated) {
+      toast.error("Please login to buy items");
+      return;
+    }
+    setBuyingNow(true);
+    const res = await addToCart(selectedProduct.id, 1);
+    if (res?.success && res?.item?.id) {
+      navigate(`/checkout?cartItemIds=${res.item.id}`);
+    } else {
+      toast.error("Could not proceed to checkout. Please try again.");
+    }
+    setBuyingNow(false);
   };
+
 
   const handleDeleteProduct = async () => {
     if (!window.confirm("Are you sure you want to delete this product?")) return;
@@ -68,6 +81,7 @@ export const useProductDetail = () => {
     handleDeleteProduct,
     addingToCart,
     handleAddToCart,
+    buyingNow,
     handleBuyNow,
   };
 };

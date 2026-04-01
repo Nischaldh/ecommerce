@@ -17,6 +17,7 @@ import Orders from "./pages/Orders";
 import OrderDetail from "./pages/OrderDetail";
 import Sellers from "./pages/Sellers";
 import SellerDetail from "./pages/SellerDetail";
+import Profile from "./pages/Profile";
 
 const App = () => {
   return (
@@ -82,6 +83,14 @@ const App = () => {
         />
         <Route path="/sellers" element={<Sellers />} />
         <Route path="/seller/:id" element={<SellerDetail />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
       <Footer />
     </div>

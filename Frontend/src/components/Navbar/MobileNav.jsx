@@ -32,11 +32,11 @@ export const MobileNav = () => {
 
       <SheetContent side="right" className="w-64 p-6 flex flex-col">
 
-        {/* User section at top — avatar links to profile, orders below */}
+        
         {isAuthenticated && (
           <div className="flex flex-col gap-3 pb-4 border-b mt-6">
 
-            {/* Avatar + name — clicking opens profile */}
+           
             <SheetClose asChild>
               <Link to="/profile" className="flex items-center gap-2 px-2">
                 <Avatar className="size-10">
@@ -47,7 +47,6 @@ export const MobileNav = () => {
                 </Avatar>
                 <div className="flex flex-col">
                   <p className="font-semibold text-sm">{user?.name}</p>
-                  <p className="text-xs text-gray-500">{user?.email}</p>
                 </div>
               </Link>
             </SheetClose>

@@ -30,7 +30,6 @@ export const UserDropDownMenu = () => {
       <DropdownMenuContent align="end">
         <div className="px-2 py-1.5">
           <p className="text-sm font-semibold">{user?.name}</p>
-          <p className="text-xs text-gray-500">{user?.email}</p>
         </div>
 
         <DropdownMenuSeparator/>

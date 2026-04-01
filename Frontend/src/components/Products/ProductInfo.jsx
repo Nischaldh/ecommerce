@@ -88,13 +88,6 @@ const ProductInfo = ({
       {isSeller ? (
       
         <div className="flex gap-3">
-          <Link
-            to={`/products/${product.id}/edit`}
-            className="flex-1 flex items-center justify-center gap-2 py-3 border border-blue-500 text-blue-500 rounded-xl font-semibold hover:bg-blue-50 transition-colors"
-          >
-            <Pencil className="size-5" />
-            Edit Product
-          </Link>
           <button
             onClick={handleDeleteProduct}
             className="flex-1 flex items-center justify-center gap-2 py-3 border border-red-500 text-red-500 rounded-xl font-semibold hover:bg-red-50 transition-colors"
@@ -104,7 +97,7 @@ const ProductInfo = ({
           </button>
         </div>
       ) : product.stock > 0 ? (
-        // buyer sees add to cart + buy now
+        
         <div className="flex gap-3">
           <button
             onClick={handleAddToCart}

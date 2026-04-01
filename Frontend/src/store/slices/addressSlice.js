@@ -13,7 +13,7 @@ const addressSlice = createSlice({
       state.total = action.payload.total;
     },
     addAddress: (state, action) => {
-      // if new address is default, unset others
+    
       if (action.payload.isDefault) {
         state.addresses = state.addresses.map((a) => ({
           ...a,
