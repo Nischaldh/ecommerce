@@ -8,7 +8,7 @@ import { useDebounce } from "../useDebounce";
 
 export const useCartPage = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, loading: authLoading } = useAuth(); // get loading too
+  const { isAuthenticated, loading: authLoading } = useAuth(); 
   const { items, loading: cartLoading, fetchCart, updateCartItem, removeFromCart } = useCart();
 
   const [selectedIds, setSelectedIds] = useState([]);
@@ -35,7 +35,7 @@ export const useCartPage = () => {
     setQuantities(initial);
   }, [items]);
 
-  // select all by default when items load
+
   useEffect(() => {
     if (items.length > 0) {
       setSelectedIds(items.map((i) => i.id));

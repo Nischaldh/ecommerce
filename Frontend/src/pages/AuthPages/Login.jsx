@@ -1,4 +1,3 @@
-// pages/Login.jsx
 import { Link } from "react-router-dom";
 import { useLogin } from "../../hooks/auth/useLogin";
 import FormInput from "../../components/FormInput";

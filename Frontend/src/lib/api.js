@@ -3,7 +3,6 @@ import { env } from "./env";
 
 const API_BASE_URL = env.BACKEND_URL
 
-console.log(API_BASE_URL);
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -26,6 +25,7 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem("token");
+      window.location.reload();
       window.location.href = "/login";
     }
     return Promise.reject(error);

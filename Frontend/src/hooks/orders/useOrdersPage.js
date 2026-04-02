@@ -44,8 +44,7 @@ export const useOrdersPage = () => {
     fetchOrders();
   }, [filters]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // search is client side since orders are already fetched
-  // filter by order id or product name
+
   const filteredOrders = orders.filter((order) => {
     if (!debouncedSearch) return true;
     const search = debouncedSearch.toLowerCase();
@@ -72,7 +71,7 @@ export const useOrdersPage = () => {
     setCancellingId(null);
   };
 
-  // can cancel only if status is PENDING
+  
   const canCancel = (order) => order.status === "PENDING";
 
   return {

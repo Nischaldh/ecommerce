@@ -38,23 +38,22 @@ export const useCheckout = () => {
     fetchAddresses();
   }, [authLoading, isAuthenticated]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // auto select default address
   useEffect(() => {
     if (addresses.length > 0 && !selectedAddressId) {
       const defaultAddr = addresses.find((a) => a.isDefault) || addresses[0];
       setSelectedAddressId(defaultAddr.id);
       setUseNewAddress(false);
     }
-    // if no saved addresses, show new address form
+    
     if (addresses.length === 0) {
       setUseNewAddress(true);
     }
   }, [addresses]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // get cart item ids from URL for partial checkout
+  
   const cartItemIds = searchParams.getAll("cartItemIds");
 
-  // items to checkout — partial or all
+  
   const itemsToCheckout = useMemo(() => {
     if (cartItemIds.length > 0) {
       return items.filter((i) => cartItemIds.includes(i.id));
@@ -62,7 +61,6 @@ export const useCheckout = () => {
     return items;
   }, [items, cartItemIds]);
 
-  // group items by seller
   const itemsBySeller = useMemo(() => {
     const groups = {};
     itemsToCheckout.forEach((item) => {
@@ -94,7 +92,7 @@ export const useCheckout = () => {
         country: formData.country,
       };
     }
-    // use saved address
+   
     const saved = addresses.find((a) => a.id === selectedAddressId);
     if (!saved) return null;
     return {
@@ -116,7 +114,7 @@ export const useCheckout = () => {
       return;
     }
 
-    // optionally save the new address
+   
     if (useNewAddress && saveAddress) {
       await createAddress({
         ...shippingAddress,
@@ -144,7 +142,6 @@ export const useCheckout = () => {
     setPlacingOrder(false);
   };
 
-  // if using saved address, submit directly without form validation
   const handlePlaceOrder = () => {
     if (useNewAddress) {
       handleSubmit(onPlaceOrder)();

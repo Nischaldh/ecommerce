@@ -1,4 +1,3 @@
-// hooks/products/useProductsPage.js
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useProducts } from "./useProduct";
@@ -46,7 +45,7 @@ export const useProductsPage = () => {
     applyFilters({ minPrice: "", maxPrice: "", page: 1 });
   };
 
-  // on mount — read URL params and hydrate Redux filters
+ 
   useEffect(() => {
     const params = {
       name: searchParams.get("name") || "",
@@ -73,7 +72,6 @@ export const useProductsPage = () => {
     if (filters.maxPrice) params.maxPrice = filters.maxPrice;
     if (filters.page && filters.page > 1) params.page = filters.page;
 
-    // replace so browser back button works naturally
     setSearchParams(params, { replace: true });
 
     fetchProducts();
@@ -83,7 +81,7 @@ export const useProductsPage = () => {
     applyFilters({ name: debouncedSearch, page: 1 });
   }, [debouncedSearch]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // close category dropdown on outside click
+  
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (categoryRef.current && !categoryRef.current.contains(e.target)) {

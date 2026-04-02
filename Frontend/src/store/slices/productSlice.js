@@ -1,13 +1,12 @@
-// store/slices/productSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const productSlice = createSlice({
   name: "products",
   initialState: {
-    items: [],          // product list
-    total: 0,           // total count for pagination
+    items: [],          
+    total: 0,          
     loading: false,
-    selectedProduct: null, // single product detail
+    selectedProduct: null, 
     filters: {
       name: "",
       category: "",
@@ -33,7 +32,7 @@ const productSlice = createSlice({
     updateProduct: (state, action) => {
       const index = state.items.findIndex((p) => p.id === action.payload.id);
       if (index !== -1) state.items[index] = action.payload;
-      // also update selectedProduct if it's the same one
+      
       if (state.selectedProduct?.id === action.payload.id) {
         state.selectedProduct = action.payload;
       }
@@ -49,7 +48,7 @@ const productSlice = createSlice({
       state.loading = action.payload;
     },
     setFilters: (state, action) => {
-      // merge new filters and reset to page 1
+      
       state.filters = { ...state.filters, ...action.payload, page: 1 };
     },
     setPage: (state, action) => {

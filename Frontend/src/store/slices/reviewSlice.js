@@ -3,12 +3,12 @@ import { createSlice } from "@reduxjs/toolkit";
 const reviewSlice = createSlice({
   name: "reviews",
   initialState: {
-    // reviews for currently viewed product
+    
     productReviews: [],
     productReviewsTotal: 0,
     submitRating: 0,  
     hoverRating: 0,
-    // logged in user's reviews
+   
     userReviews: [],
     userReviewsTotal: 0,
     loading: false,

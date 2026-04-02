@@ -31,14 +31,14 @@ export const useSellerDetail = () => {
   const debouncedSearch = useDebounce(searchInput, 500);
   const totalPages = Math.ceil(sellerProductsTotal / (productFilters.pageSize || 10));
 
-  // load seller on mount
+  
   useEffect(() => {
     const load = async () => {
       const res = await fetchSellerById(id);
       if (!res.success) navigate("/sellers");
     };
     load();
-    // hydrate filters from URL
+    
     applyProductFilters({
       name: searchParams.get("name") || "",
       sort: searchParams.get("sort") || "",
@@ -48,12 +48,12 @@ export const useSellerDetail = () => {
     });
   }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // debounced search
+  
   useEffect(() => {
     applyProductFilters({ name: debouncedSearch, page: 1 });
   }, [debouncedSearch]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // sync filters to URL + fetch products
+
   useEffect(() => {
     if (!id) return;
     const params = {};

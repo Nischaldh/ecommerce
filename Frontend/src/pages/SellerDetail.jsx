@@ -1,4 +1,3 @@
-// pages/SellerDetail.jsx
 import { useSellerDetail } from "@/hooks/sellers/useSellerDetail";
 import SellerProfile from "@/components/Sellers/SellerProfile";
 import SellerFilters from "@/components/Sellers/SellerFilters";

@@ -1,4 +1,3 @@
-// hooks/products/useProducts.js
 import { useDispatch, useSelector } from "react-redux";
 import { useCallback, useEffect } from "react";
 import toast from "react-hot-toast";
@@ -40,7 +39,7 @@ export const useProducts = () => {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // fetch product list — uses current filters from Redux by default
+
   const fetchProducts = useCallback(
     async (overrideParams) => {
       dispatch(setLoading(true));
@@ -61,7 +60,6 @@ export const useProducts = () => {
     [dispatch, filters],
   );
 
-  // fetch single product
   const fetchProductById = useCallback(
     async (id) => {
       dispatch(setLoading(true));
@@ -77,7 +75,6 @@ export const useProducts = () => {
     [dispatch],
   );
 
-  // seller — create product
   const createProduct = useCallback(
     async (formData) => {
       dispatch(setLoading(true));
@@ -94,7 +91,7 @@ export const useProducts = () => {
     [dispatch],
   );
 
-  // seller — edit product
+
   const editProduct = useCallback(
     async (id, formData) => {
       dispatch(setLoading(true));
@@ -111,7 +108,7 @@ export const useProducts = () => {
     [dispatch],
   );
 
-  // seller — delete product
+
   const deleteProduct = useCallback(
     async (id) => {
       dispatch(setLoading(true));
@@ -128,7 +125,6 @@ export const useProducts = () => {
     [dispatch],
   );
 
-  // filter helpers
   const applyFilters = useCallback(
     (newFilters) => {
       dispatch(setFilters(newFilters));

@@ -1,4 +1,3 @@
-// components/Products/ProductCard.jsx
 import { Link } from "react-router-dom";
 import { Star, Package } from "lucide-react";
 

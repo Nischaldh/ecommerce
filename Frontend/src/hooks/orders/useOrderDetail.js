@@ -91,7 +91,7 @@ export const useOrderDetail = () => {
     setSavingAddress(true);
     const res = await updateOrderAddressService(id, data);
     if (res.success) {
-      setOrder(res.order); // update with full fresh order from backend
+      setOrder(res.order); 
       setEditingAddress(false);
       toast.success("Address updated successfully");
     } else {

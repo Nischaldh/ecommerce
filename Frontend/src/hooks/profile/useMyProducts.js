@@ -17,7 +17,7 @@ export const useMyProducts = () => {
     deleteProduct,
   } = useProducts();
 
-  // own state for seller's products (separate from the global product list)
+  
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
   const [fetchingProducts, setFetchingProducts] = useState(false);
@@ -135,7 +135,7 @@ export const useMyProducts = () => {
     });
     setConfirmingStockId(null);
     setSavingStock(false);
-    fetchMyProducts(); // refresh after stock update
+    fetchMyProducts(); 
   }, [stockEdits, editProduct, fetchMyProducts]);
 
   const handleCancelStockEdit = useCallback((productId) => {
@@ -150,7 +150,7 @@ export const useMyProducts = () => {
   const handleDelete = useCallback(async (id) => {
     if (!window.confirm("Delete this product?")) return;
     const res = await deleteProduct(id);
-    if (res.success) fetchMyProducts(); // refresh after delete
+    if (res.success) fetchMyProducts(); 
   }, [deleteProduct, fetchMyProducts]);
 
   return {

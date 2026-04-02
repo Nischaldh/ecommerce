@@ -1,4 +1,3 @@
-// pages/Cart.jsx
 import { ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCartPage } from "@/hooks/cart/useCartPage";
