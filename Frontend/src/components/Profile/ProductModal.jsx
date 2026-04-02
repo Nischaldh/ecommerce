@@ -102,23 +102,30 @@ const ProductModal = ({ isOpen, onClose, editingProduct, form, onSubmit }) => {
               </p>
             )}
           </div>
-
           <div className="grid grid-cols-2 gap-3">
-            <FormInput
-              type="number"
-              placeholder="Price (Rs.)"
-              min={0}
-              error={errors.price?.message}
-              {...register("price", { valueAsNumber: true })}
-            />
+            {/* Price */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-medium text-gray-700">
+                Price (Rs.)
+              </label>
+              <FormInput
+                type="number"
+                min={0}
+                error={errors.price?.message}
+                {...register("price", { valueAsNumber: true })}
+              />
+            </div>
 
-            <FormInput
-              type="number"
-              placeholder="Stock"
-              min={0}
-              error={errors.stock?.message}
-              {...register("stock", { valueAsNumber: true })}
-            />
+            {/* Stock */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-medium text-gray-700">Stock</label>
+              <FormInput
+                type="number"
+                min={0}
+                error={errors.stock?.message}
+                {...register("stock", { valueAsNumber: true })}
+              />
+            </div>
           </div>
 
           <div className="flex flex-col gap-1.5">
