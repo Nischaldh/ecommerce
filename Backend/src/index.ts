@@ -14,7 +14,7 @@ const app = new Koa();
 const PORT = env.PORT;
 
 app.use(cors({
-  origin: "*",
+  origin: env.FRONTEND_URL,
   credentials:true
 }))
 
