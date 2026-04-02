@@ -3,14 +3,19 @@ import { useEffect } from "react";
 import FormInput from "../FormInput";
 import { categories } from "@/constants/constants";
 
-
 const ProductModal = ({ isOpen, onClose, editingProduct, form, onSubmit }) => {
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = form;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = form;
 
   useEffect(() => {
     if (isOpen) document.body.style.overflow = "hidden";
     else document.body.style.overflow = "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -18,14 +23,10 @@ const ProductModal = ({ isOpen, onClose, editingProduct, form, onSubmit }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/50"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
 
       {/* Modal */}
       <div className="relative bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-xl">
-
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-gray-100 sticky top-0 bg-white z-10">
           <h2 className="font-bold text-gray-900 text-lg">
@@ -40,12 +41,15 @@ const ProductModal = ({ isOpen, onClose, editingProduct, form, onSubmit }) => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="p-5 flex flex-col gap-4">
-
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="p-5 flex flex-col gap-4"
+        >
           {/* Primary image */}
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-gray-700">
-              Primary Image {!editingProduct && <span className="text-red-500">*</span>}
+              Primary Image{" "}
+              {!editingProduct && <span className="text-red-500">*</span>}
             </label>
             <input
               type="file"
@@ -54,7 +58,9 @@ const ProductModal = ({ isOpen, onClose, editingProduct, form, onSubmit }) => {
               className="text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:bg-orange-50 file:text-orange-500 hover:file:bg-orange-100 transition-colors"
             />
             {errors.primaryImage && (
-              <p className="text-red-500 text-xs">{errors.primaryImage.message}</p>
+              <p className="text-red-500 text-xs">
+                {errors.primaryImage.message}
+              </p>
             )}
           </div>
 
@@ -62,7 +68,9 @@ const ProductModal = ({ isOpen, onClose, editingProduct, form, onSubmit }) => {
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-gray-700">
               Additional Images{" "}
-              <span className="text-gray-400 font-normal">(up to 5, optional)</span>
+              <span className="text-gray-400 font-normal">
+                (up to 5, optional)
+              </span>
             </label>
             <input
               type="file"
@@ -89,7 +97,9 @@ const ProductModal = ({ isOpen, onClose, editingProduct, form, onSubmit }) => {
               }`}
             />
             {errors.description && (
-              <p className="text-red-500 text-xs">{errors.description.message}</p>
+              <p className="text-red-500 text-xs">
+                {errors.description.message}
+              </p>
             )}
           </div>
 
@@ -101,6 +111,7 @@ const ProductModal = ({ isOpen, onClose, editingProduct, form, onSubmit }) => {
               error={errors.price?.message}
               {...register("price", { valueAsNumber: true })}
             />
+
             <FormInput
               type="number"
               placeholder="Stock"
@@ -119,7 +130,9 @@ const ProductModal = ({ isOpen, onClose, editingProduct, form, onSubmit }) => {
             >
               <option value="">Select Category</option>
               {categories.map((cat) => (
-                <option key={cat.id} value={cat.value}>{cat.name}</option>
+                <option key={cat.id} value={cat.value}>
+                  {cat.name}
+                </option>
               ))}
             </select>
             {errors.category && (
@@ -143,7 +156,9 @@ const ProductModal = ({ isOpen, onClose, editingProduct, form, onSubmit }) => {
             >
               {isSubmitting
                 ? "Saving..."
-                : editingProduct ? "Save Changes" : "Add Product"}
+                : editingProduct
+                  ? "Save Changes"
+                  : "Add Product"}
             </button>
           </div>
         </form>
