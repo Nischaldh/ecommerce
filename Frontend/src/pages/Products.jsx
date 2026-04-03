@@ -7,7 +7,6 @@ import ProductListSkeleton from "@/components/Products/ProductListSkeleton";
 import ProductListCard from "@/components/Products/ProductsList";
 import PriceFilter from "@/components/Products/PriceFilter";
 
-
 const Products = () => {
   const {
     products,
@@ -25,14 +24,13 @@ const Products = () => {
     priceInput,
     setPriceInput,
     handlePriceApply,
-    handlePriceClear
+    handlePriceClear,
   } = useProductsPage();
   const selectedCategory = categories.find((c) => c.value === filters.category);
 
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex gap-6 flex-1 py-6">
-
         {/* ── Desktop sidebar categories ── */}
         <aside className="hidden md:flex flex-col gap-1 w-48 shrink-0">
           <h2 className="font-semibold text-gray-800 px-3 mb-2">Categories</h2>
@@ -49,21 +47,19 @@ const Products = () => {
               {cat.name}
             </button>
           ))}
-            <div className="mt-4 px-1">
-    <PriceFilter
-      priceInput={priceInput}
-      setPriceInput={setPriceInput}
-      handlePriceApply={handlePriceApply}
-      handlePriceClear={handlePriceClear}
-      filters={filters}
-    />
-  </div>
-
+          <div className="mt-4 px-1">
+            <PriceFilter
+              priceInput={priceInput}
+              setPriceInput={setPriceInput}
+              handlePriceApply={handlePriceApply}
+              handlePriceClear={handlePriceClear}
+              filters={filters}
+            />
+          </div>
         </aside>
 
         {/* ── Main content ── */}
         <div className="flex flex-col flex-1 gap-4 min-w-0">
-
           {/* ── Search bar ── */}
           <div className="flex gap-2">
             <div className="relative flex-1">
@@ -93,6 +89,10 @@ const Products = () => {
               handleSortChange={handleSortChange}
               handleClearFilters={handleClearFilters}
               hasActiveFilters={hasActiveFilters}
+              priceInput={priceInput}
+              setPriceInput={setPriceInput}
+              handlePriceApply={handlePriceApply}
+              handlePriceClear={handlePriceClear}
             />
           </div>
 
@@ -129,7 +129,9 @@ const Products = () => {
               {selectedCategory && (
                 <span className="flex items-center gap-1 px-2.5 py-1 bg-orange-50 text-orange-500 text-xs rounded-full border border-orange-200">
                   {selectedCategory.name}
-                  <button onClick={() => handleCategorySelect(filters.category)}>
+                  <button
+                    onClick={() => handleCategorySelect(filters.category)}
+                  >
                     <X className="size-3" />
                   </button>
                 </span>
@@ -206,11 +208,12 @@ const Products = () => {
               </button>
 
               {Array.from({ length: totalPages }, (_, i) => i + 1)
-                .filter((p) => (
-                  p === 1 ||
-                  p === totalPages ||
-                  Math.abs(p - filters.page) <= 1
-                ))
+                .filter(
+                  (p) =>
+                    p === 1 ||
+                    p === totalPages ||
+                    Math.abs(p - filters.page) <= 1,
+                )
                 .reduce((acc, p, idx, arr) => {
                   if (idx > 0 && p - arr[idx - 1] > 1) acc.push("...");
                   acc.push(p);
@@ -233,7 +236,7 @@ const Products = () => {
                     >
                       {p}
                     </button>
-                  )
+                  ),
                 )}
 
               <button

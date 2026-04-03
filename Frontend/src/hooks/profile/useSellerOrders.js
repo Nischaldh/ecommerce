@@ -2,11 +2,16 @@ import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import {
-  setSellerItems, updateSellerItemStatus, setLoading,
+  setSellerItems,
+  updateSellerItemStatus,
+  setLoading,
 } from "../../store/slices/orderSlice.js";
-import { getSellerOrderItemsService, updateDeliveryService, updateOrderItemStatusService } from "@/services/order.service.js";
+import {
+  getSellerOrderItemsService,
+  updateDeliveryService,
+  updateOrderItemStatusService,
+} from "@/services/order.service.js";
 import { itemStatusConfig } from "@/constants/constants.js";
-
 
 const allowedTransitions = {
   PENDING: ["PROCESSING", "CANCELLED"],
@@ -19,7 +24,9 @@ const allowedTransitions = {
 
 export const useSellerOrders = () => {
   const dispatch = useDispatch();
-  const { sellerItems, sellerTotal, loading } = useSelector((state) => state.orders);
+  const { sellerItems, sellerTotal, loading } = useSelector(
+    (state) => state.orders,
+  );
   const [updatingId, setUpdatingId] = useState(null);
   const [deliveryModal, setDeliveryModal] = useState(null);
 
@@ -35,20 +42,29 @@ export const useSellerOrders = () => {
     load();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleStatusUpdate = useCallback(async (itemId, newStatus) => {
-    setUpdatingId(itemId);
-    const res = await updateOrderItemStatusService(itemId, newStatus);
-    if (res.success) {
-      dispatch(updateSellerItemStatus({ id: itemId, status: newStatus }));
-      toast.success(`Order marked as ${newStatus.toLowerCase()}`);
-    } else {
-      toast.error(res.message || "Failed to update status");
-    }
-    setUpdatingId(null);
-  }, [dispatch]);
+  const handleStatusUpdate = useCallback(
+    async (itemId, newStatus) => {
+      setUpdatingId(itemId);
+      const res = await updateOrderItemStatusService(itemId, newStatus);
+      if (res.success) {
+        dispatch(updateSellerItemStatus({ id: itemId, status: newStatus }));
+        toast.success(`Order marked as ${newStatus.toLowerCase()}`);
+      } else {
+        toast.error(res.message || "Failed to update status");
+      }
+      setUpdatingId(null);
+    },
+    [dispatch],
+  );
 
   const handleDeliveryUpdate = useCallback(async (itemId, data) => {
-    const res = await updateDeliveryService(itemId, data);
+    const cleanData = Object.fromEntries(
+      Object.entries(data).filter(
+        ([, v]) => v !== "" && v !== null && v !== undefined,
+      ),
+    );
+
+    const res = await updateDeliveryService(itemId, cleanData);
     if (res.success) {
       toast.success("Delivery info updated!");
       setDeliveryModal(null);
@@ -58,13 +74,20 @@ export const useSellerOrders = () => {
     return res;
   }, []);
 
-  const getNextStatuses = (currentStatus) => allowedTransitions[currentStatus] || [];
+  const getNextStatuses = (currentStatus) =>
+    allowedTransitions[currentStatus] || [];
 
   return {
-    sellerItems, sellerTotal, loading,
-    updatingId, deliveryModal, setDeliveryModal,
-    handleStatusUpdate, handleDeliveryUpdate,
-    getNextStatuses, itemStatusConfig,
+    sellerItems,
+    sellerTotal,
+    loading,
+    updatingId,
+    deliveryModal,
+    setDeliveryModal,
+    handleStatusUpdate,
+    handleDeliveryUpdate,
+    getNextStatuses,
+    itemStatusConfig,
     allowedTransitions,
   };
 };

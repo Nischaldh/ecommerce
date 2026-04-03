@@ -106,13 +106,20 @@ export const placeOrderService = async (
     });
 
     const savedOrder = await manager.save(Order, order);
+    for (const item of savedOrder.items) {
+      const delivery = manager.create(Delivery, {
+        order_item_id: item.id,
+      });
+      await manager.save(Delivery, delivery);
+    }
+
     await manager.delete(
       CartItem,
       itemsToOrder.map((i) => i.id),
     );
     const fullOrder = await manager.findOneOrFail(Order, {
       where: { id: savedOrder.id },
-      relations: ["items","items.product"],
+      relations: ["items", "items.product"],
     });
 
     return { order: mapOrder(fullOrder), success: true };
@@ -130,7 +137,7 @@ export const getMyOrdersService = async (
 
   const [orders, total] = await orderRepository.findAndCount({
     where,
-    relations: ["items", "items.delivery","items.product"],
+    relations: ["items", "items.delivery", "items.product"],
     order: { createdAt: "DESC" },
     skip,
     take: pageSize,
@@ -145,7 +152,7 @@ export const getOrderByIdService = async (
 ): Promise<{ order: IOrderResponse }> => {
   const order = await orderRepository.findOne({
     where: { id: orderId },
-    relations: ["items", "items.product", "items.delivery","items.seller"],
+    relations: ["items", "items.product", "items.delivery", "items.seller"],
   });
 
   if (!order) throw new NotFoundError("Order not found");
@@ -257,7 +264,6 @@ export const updateDeliveryService = async (
   sellerId: string,
   data: IUpdateDelivery,
 ): Promise<{ delivery: IDeliveryResponse }> => {
-  
   const orderItem = await orderItemRepository.findOne({
     where: { id: orderItemId, seller_id: sellerId },
     relations: ["delivery"],

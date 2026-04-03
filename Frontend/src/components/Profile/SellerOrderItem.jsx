@@ -12,7 +12,11 @@ const SellerOrderItem = ({
   itemStatusConfig,
 }) => {
   const [showDelivery, setShowDelivery] = useState(false);
-  const { register, handleSubmit, formState: { isSubmitting } } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm({
     defaultValues: {
       trackingNumber: item.trackingNumber || "",
       carrier: item.carrier || "",
@@ -28,11 +32,15 @@ const SellerOrderItem = ({
   const isUpdating = updatingId === item.id;
 
   const onSubmitDelivery = async (data) => {
-    await onDeliveryUpdate(item.id, {
-      ...data,
-      estimatedDelivery: data.estimatedDelivery || null,
-    });
-    setShowDelivery(false);
+    const cleanData = Object.fromEntries(
+      Object.entries(data).filter(
+        ([, v]) => v !== "" && v !== null && v !== undefined,
+      ),
+    );
+    const res = await onDeliveryUpdate(item.id, cleanData);
+    if (res?.success) {
+      setShowDelivery(false);
+    }
   };
 
   return (
@@ -48,9 +56,12 @@ const SellerOrderItem = ({
         </div>
 
         <div className="flex-1 min-w-0">
-          <h4 className="font-semibold text-gray-900 text-sm truncate">{item.productName}</h4>
+          <h4 className="font-semibold text-gray-900 text-sm truncate">
+            {item.productName}
+          </h4>
           <p className="text-xs text-gray-500 mt-0.5">
-            Qty: {item.quantity} · Rs. {Number(item.subtotal).toLocaleString("en-NP")}
+            Qty: {item.quantity} · Rs.{" "}
+            {Number(item.subtotal).toLocaleString("en-NP")}
           </p>
           <p className="text-xs text-gray-400 mt-0.5 font-mono">
             Order #{item.order_id.slice(0, 8).toUpperCase()}
@@ -94,10 +105,12 @@ const SellerOrderItem = ({
           onSubmit={handleSubmit(onSubmitDelivery)}
           className="flex flex-col gap-3 bg-blue-50 rounded-xl p-3 mt-1"
         >
-          <p className="text-xs font-semibold text-blue-700">Delivery Details</p>
+          <p className="text-xs font-semibold text-blue-700">
+            Delivery Details
+          </p>
           <div className="grid grid-cols-2 gap-2">
             <FormInput
-              placeholder="Carrier (e.g. FedEx)"
+              placeholder="Carrier"
               {...register("carrier")}
             />
             <FormInput
@@ -105,14 +118,8 @@ const SellerOrderItem = ({
               {...register("trackingNumber")}
             />
           </div>
-          <FormInput
-            type="date"
-            {...register("estimatedDelivery")}
-          />
-          <FormInput
-            placeholder="Notes (optional)"
-            {...register("notes")}
-          />
+          <FormInput type="date" {...register("estimatedDelivery")} />
+          <FormInput placeholder="Notes (optional)" {...register("notes")} />
           <button
             type="submit"
             disabled={isSubmitting}

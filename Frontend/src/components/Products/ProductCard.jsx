@@ -1,7 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Star, Package } from "lucide-react";
 
 const ProductCard = ({ product }) => {
+  const navigate = useNavigate();
+
   const formattedDate = new Date(product.createdAt).toLocaleDateString(
     "en-US",
     {
@@ -12,8 +14,8 @@ const ProductCard = ({ product }) => {
   );
 
   return (
-    <Link
-      to={`/products/${product.id}`}
+    <div
+      onClick={() => navigate(`/products/${product.id}`)}
       className="group flex flex-col bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-md transition-shadow duration-300"
     >
       {/* Image */}
@@ -116,7 +118,7 @@ const ProductCard = ({ product }) => {
           </span>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 
