@@ -1,5 +1,4 @@
 import type { Context } from "koa";
-import { userRole } from "../types/global.types.js";
 import {
     emailValidation,
   loginValidation,

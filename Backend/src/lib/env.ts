@@ -11,6 +11,7 @@ type envSchema = {
   CLOUD_API_KEY: string;
   CLOUD_API_SECRET: string;
   FRONTEND_URL: string;
+  SENDGRID_API_KEY: string;
 };
 
 const env: envSchema = {
@@ -26,6 +27,7 @@ const env: envSchema = {
   CLOUD_API_KEY: process.env.CLOUDINARY_API_KEY || "",
   CLOUD_API_SECRET: process.env.CLOUDINARY_SECRET_KEY || "",
   FRONTEND_URL: process.env.FRONTEND_URL || "",
+  SENDGRID_API_KEY: process.env.SENDGRID_API_KEY || "",
 };
 
 export default env;

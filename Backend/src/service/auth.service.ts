@@ -1,7 +1,7 @@
 import { AppDataSource } from "../config/data-source.js";
 import { User } from "../entity/User.js";
 import { comparePassword, hashPassword } from "../lib/bcrypt.js";
-import { transporter } from "../lib/email.js";
+import { sendEmail } from "../lib/email.js";
 import env from "../lib/env.js";
 import { BadRequestError, NotFoundError } from "../lib/erros.js";
 import { generateToken } from "../lib/jwt.js";
@@ -104,15 +104,12 @@ export const generateOtpService = async (validatedData: {
   user.otpExpires = new Date(Date.now() + 10 * 60 * 1000);
 
   await userRepository.save(user);
-  const result = await transporter.sendMail({
-    to: email,
-    subject: "Verification OTP",
-    text: `Your OTP is ${otp}. It will expire in 10 minutes.`,
-  });
-  
-  if (!result.accepted.length) {
-    throw new Error("Failed to send OTP email. Please try again.");
-  }
+  await sendEmail(
+    email,
+    "Verification OTP",
+    `Your OTP is ${otp}. It will expire in 10 minutes.`,
+  );
+
   return {
     success: true,
     message: "OTP sent to email if user exists",

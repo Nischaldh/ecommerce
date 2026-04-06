@@ -1,7 +1,7 @@
 import { AppDataSource } from "../config/data-source.js";
 import { User } from "../entity/User.js";
 import { comparePassword, hashPassword } from "../lib/bcrypt.js";
-import { transporter } from "../lib/email.js";
+import { sendEmail } from "../lib/email.js";
 import { BadRequestError, NotFoundError } from "../lib/erros.js";
 import { generateOtp } from "../lib/otp.js";
 import { successResponse } from "../types/global.types.js";
@@ -55,11 +55,11 @@ export const updateProfileService = async (
     user.emailOtp = await hashPassword(otp);
     user.emailOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
 
-    await transporter.sendMail({
-      to: input.newEmail,
-      subject: "Verify your new email",
-      text: `Your verification code is ${otp}`,
-    });
+    await sendEmail(
+      input.newEmail,
+      "Verify your new email",
+      `Your verification code is ${otp}. It will expire in 10 minutes.`,
+    );
   }
 
   await userRepository.save(user);
@@ -98,11 +98,13 @@ export const verifyEmailChangeService = async (
   return { success: true, message: "Email updated successfully" };
 };
 
-export const getMeService = async(userId:string):Promise<{user:IUser;success:boolean}>=>{
-  const user = await userRepository.findOne({where:{id:userId}});
-  if(!user) throw new NotFoundError("User not found.");
-  return{
+export const getMeService = async (
+  userId: string,
+): Promise<{ user: IUser; success: boolean }> => {
+  const user = await userRepository.findOne({ where: { id: userId } });
+  if (!user) throw new NotFoundError("User not found.");
+  return {
     user,
-    success:true
-  }
-}
+    success: true,
+  };
+};
