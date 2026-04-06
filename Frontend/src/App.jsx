@@ -18,8 +18,10 @@ import OrderDetail from "./pages/OrderDetail";
 import Sellers from "./pages/Sellers";
 import SellerDetail from "./pages/SellerDetail";
 import Profile from "./pages/Profile";
+import { useSocket } from "./hooks/useSocket";
 
 const App = () => {
+  useSocket();
   return (
     <div className="px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
       <NavBar />

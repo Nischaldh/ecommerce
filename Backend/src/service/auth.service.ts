@@ -109,6 +109,7 @@ export const generateOtpService = async (validatedData: {
     subject: "Verification OTP",
     text: `Your OTP is ${otp}. It will expire in 10 minutes.`,
   });
+  
   if (!result.accepted.length) {
     throw new Error("Failed to send OTP email. Please try again.");
   }

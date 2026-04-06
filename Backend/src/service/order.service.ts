@@ -23,12 +23,14 @@ import {
 } from "../lib/utlis.js";
 import { OrderItem } from "../entity/OrderItems.js";
 import {
+  NotificationType,
   OrderItemStatus,
   OrderStatus,
   PaymentStatus,
 } from "../types/global.types.js";
 import { Delivery } from "../entity/Delivery.js";
 import { ICreateAddress } from "../types/address.schema.js";
+import { createNotificationService } from "./notification.service.js";
 
 const orderRepository = AppDataSource.getRepository(Order);
 const orderItemRepository = AppDataSource.getRepository(OrderItem);
@@ -112,6 +114,17 @@ export const placeOrderService = async (
       });
       await manager.save(Delivery, delivery);
     }
+    const sellerIds = [...new Set(orderItemEntities.map((i) => i.seller_id))];
+
+    for (const sellerId of sellerIds) {
+      await createNotificationService({
+        userId: sellerId,
+        type: NotificationType.ORDER_PLACED,
+        title: "New Order Received",
+        message: `You have a new order. Check your dashboard.`,
+        orderId: savedOrder.id,
+      });
+    }
 
     await manager.delete(
       CartItem,
@@ -157,7 +170,6 @@ export const getOrderByIdService = async (
 
   if (!order) throw new NotFoundError("Order not found");
 
-  // buyer can only see their own orders
   if (order.user_id !== userId) {
     throw new ForbiddenError("Access denied");
   }
@@ -205,6 +217,15 @@ export const cancelOrderService = async (
         item.quantity,
       );
     }
+    for (const item of order.items) {
+      await createNotificationService({
+        userId: item.seller_id,
+        type: NotificationType.ORDER_CANCELLED,
+        title: "Order Cancelled",
+        message: `An order for "${item.productName}" was cancelled by the buyer.`,
+        orderId: order.id,
+      });
+    }
 
     return { success: true };
   });
@@ -227,36 +248,46 @@ export const updateOrderItemStatusService = async (
   sellerId: string,
   newStatus: OrderItemStatus,
 ): Promise<{ item: IOrderItemResponse }> => {
-  const item = await orderItemRepository.findOne({
-    where: { id: itemId, seller_id: sellerId },
-    relations: ["order"],
-  });
-
-  if (!item) throw new NotFoundError("Order item not found");
-
-  if (!allowedTransitions[item.status].includes(newStatus)) {
-    throw new BadRequestError(
-      `Cannot transition from ${item.status} to ${newStatus}`,
-    );
-  }
-
-  item.status = newStatus;
-  if (newStatus === OrderItemStatus.DELIVERED) {
-    const allItems = await orderItemRepository.find({
-      where: { order_id: item.order_id },
+  return await AppDataSource.transaction(async (manager) => {
+    const item = await manager.findOne(OrderItem, {
+      where: { id: itemId, seller_id: sellerId },
+      relations: ["order"],
     });
-    const allDelivered = allItems.every(
-      (i) => i.id === item.id || i.status === OrderItemStatus.DELIVERED,
-    );
-    if (allDelivered) {
-      await orderRepository.update(item.order_id, {
-        status: OrderStatus.COMPLETED,
-      });
-    }
-  }
 
-  const saved = await orderItemRepository.save(item);
-  return { item: mapOrderItem(saved) };
+    if (!item) throw new NotFoundError("Order item not found");
+
+    if (!allowedTransitions[item.status].includes(newStatus)) {
+      throw new BadRequestError(
+        `Cannot transition from ${item.status} to ${newStatus}`,
+      );
+    }
+    item.status = newStatus;
+
+    const saved = await manager.save(OrderItem, item);
+
+    if (newStatus === OrderItemStatus.DELIVERED) {
+      const allItems = await manager.find(OrderItem, {
+        where: { order_id: item.order_id },
+      });
+      const allDelivered = allItems.every(
+        (i) => i.id === item.id || i.status === OrderItemStatus.DELIVERED,
+      );
+      if (allDelivered) {
+        await manager.update(Order, item.order_id, {
+          status: OrderStatus.COMPLETED,
+        });
+      }
+    }
+    await createNotificationService({
+      userId: item.order.user_id,
+      type: NotificationType.ORDER_STATUS_UPDATED,
+      title: "Order Status Updated",
+      message: `Your item "${item.productName}" is now ${newStatus.toLowerCase()}.`,
+      orderId: item.order_id,
+    });
+
+    return { item: mapOrderItem(saved) };
+  });
 };
 
 export const updateDeliveryService = async (

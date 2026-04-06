@@ -11,6 +11,7 @@ import { OrderItem } from "../entity/OrderItems.js"
 import { Delivery } from "../entity/Delivery.js"
 import { UserAddress } from "../entity/UserAddresses.js"
 import { Review } from "../entity/Review.js"
+import { Notification } from "../entity/Notification.js"
 
 
 export const AppDataSource = new DataSource({
@@ -18,7 +19,7 @@ export const AppDataSource = new DataSource({
     url:env.DATABASE_URL,
     synchronize: true,
     logging: false,
-    entities: [User, Product, ProductImage,Cart,CartItem,Order,OrderItem,Delivery,UserAddress,Review],
+    entities: [User, Product, ProductImage,Cart,CartItem,Order,OrderItem,Delivery,UserAddress,Review,Notification],
     migrations: [],
     subscribers: [],
 })

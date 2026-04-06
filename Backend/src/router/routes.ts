@@ -7,6 +7,7 @@ import orderRouter from "./order.router.js";
 import reviewRouter from "./review.router.js";
 import addressRouter from "./address.router.js";
 import sellerRouter from "./seller.router.js";
+import notificationRouter from "./notification.router.js";
 
 const router = new Router({prefix:"/api"});
 
@@ -25,5 +26,7 @@ router.use(reviewRouter.routes(),reviewRouter.allowedMethods());
 router.use(addressRouter.routes(), addressRouter.allowedMethods());
 
 router.use(sellerRouter.routes(), sellerRouter.allowedMethods());
+
+router.use(notificationRouter.routes(),notificationRouter.allowedMethods());
 
 export default router;

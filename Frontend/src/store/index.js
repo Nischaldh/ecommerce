@@ -5,6 +5,7 @@ import orderReducer from "./slices/orderSlice.js";
 import reviewReducer from "./slices/reviewSlice.js";
 import addressReducer from "./slices/addressSlice.js";
 import sellerReducer from "./slices/sellerSlice.js";
+import notificationReducer from "./slices/notificationSlice.js";
 
 
 export const store = configureStore({
@@ -15,5 +16,6 @@ export const store = configureStore({
     reviews: reviewReducer,
     addresses: addressReducer,
     sellers: sellerReducer,
+    notifications: notificationReducer,
   },
 });
