@@ -18,7 +18,7 @@ const NavBar = () => {
         <div className="flex items-center justify-between py-4">
           {/* left side logo */}
           <Link className="font-bold shrink-0" to="/">
-            <span className="hidden sm:block text-2xl">Ecommerce</span>
+            <span className="hidden sm:block text-orange-500 text-2xl">Ecommerce</span>
             <span className="sm:hidden text-xl text-orange-500 font-extrabold">
               EC
             </span>
