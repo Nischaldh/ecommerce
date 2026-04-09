@@ -10,6 +10,7 @@ import { useCart } from "../cart/useCart";
 import { useAddresses } from "../addresses/useAddress";
 import { placeOrderService } from "@/services/order.service";
 import { addressSchema } from "@/validations/validations";
+import { initiatePaymentService } from "@/services/payment.service";
 
 export const useCheckout = () => {
   const navigate = useNavigate();
@@ -23,6 +24,8 @@ export const useCheckout = () => {
   const [useNewAddress, setUseNewAddress] = useState(false);
   const [saveAddress, setSaveAddress] = useState(false);
   const [placingOrder, setPlacingOrder] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("COD");
+  const [redirectingToKhalti, setRedirectingToKhalti] = useState(false);
 
   const {
     register,
@@ -44,16 +47,14 @@ export const useCheckout = () => {
       setSelectedAddressId(defaultAddr.id);
       setUseNewAddress(false);
     }
-    
+
     if (addresses.length === 0) {
       setUseNewAddress(true);
     }
   }, [addresses]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  
   const cartItemIds = searchParams.getAll("cartItemIds");
 
-  
   const itemsToCheckout = useMemo(() => {
     if (cartItemIds.length > 0) {
       return items.filter((i) => cartItemIds.includes(i.id));
@@ -92,7 +93,7 @@ export const useCheckout = () => {
         country: formData.country,
       };
     }
-   
+
     const saved = addresses.find((a) => a.id === selectedAddressId);
     if (!saved) return null;
     return {
@@ -114,7 +115,6 @@ export const useCheckout = () => {
       return;
     }
 
-   
     if (useNewAddress && saveAddress) {
       await createAddress({
         ...shippingAddress,
@@ -124,19 +124,46 @@ export const useCheckout = () => {
 
     setPlacingOrder(true);
 
+    // step 1 — place the order
     const orderData = {
       shippingAddress,
       ...(cartItemIds.length > 0 && { cartItemIds }),
     };
 
-    const res = await placeOrderService(orderData);
+    const orderRes = await placeOrderService(orderData);
 
-    if (res.success) {
-      emptyCart();
-      toast.success("Order placed successfully!");
+    if (!orderRes.success) {
+      toast.error(orderRes.message || "Failed to place order");
+      setPlacingOrder(false);
+      return;
+    }
+
+    const orderId = orderRes.order.id;
+
+    // step 2 — initiate payment
+    const paymentRes = await initiatePaymentService({
+      orderId,
+      method: paymentMethod,
+    });
+
+    if (!paymentRes.success) {
+      toast.error(paymentRes.message || "Failed to initiate payment");
+      setPlacingOrder(false);
+      // order is placed but payment failed — go to orders page
       navigate("/orders");
-    } else {
-      toast.error(res.message || "Failed to place order");
+      return;
+    }
+
+    if (paymentMethod === "COD") {
+      emptyCart();
+      toast.success("Order placed successfully! Pay on delivery.");
+      navigate(`/orders/${orderId}`);
+    } else if (paymentMethod === "KHALTI") {
+      // redirect to Khalti payment page
+      setRedirectingToKhalti(true);
+      emptyCart();
+      toast.success("Redirecting to Khalti...");
+      window.location.href = paymentRes.paymentUrl;
     }
 
     setPlacingOrder(false);
@@ -159,6 +186,8 @@ export const useCheckout = () => {
     setUseNewAddress,
     saveAddress,
     setSaveAddress,
+    paymentMethod,
+    setPaymentMethod,
     // form
     register,
     errors,
@@ -170,5 +199,7 @@ export const useCheckout = () => {
     placingOrder,
     handlePlaceOrder,
     user,
+    redirectingToKhalti,
+    setRedirectingToKhalti,
   };
 };

@@ -26,11 +26,13 @@ import {
   NotificationType,
   OrderItemStatus,
   OrderStatus,
+  PaymentMethod,
   PaymentStatus,
 } from "../types/global.types.js";
 import { Delivery } from "../entity/Delivery.js";
 import { ICreateAddress } from "../types/address.schema.js";
 import { createNotificationService } from "./notification.service.js";
+import { confirmCODPaymentService, processCODConfirmation } from "./payment.service.js";
 
 const orderRepository = AppDataSource.getRepository(Order);
 const orderItemRepository = AppDataSource.getRepository(OrderItem);
@@ -276,6 +278,21 @@ export const updateOrderItemStatusService = async (
         await manager.update(Order, item.order_id, {
           status: OrderStatus.COMPLETED,
         });
+        const order = await manager.findOne(Order, {
+          where: { id: item.order_id },
+          relations: ["items"]        
+        });
+
+        if (order?.paymentMethod === PaymentMethod.COD) {
+          try {
+            await processCODConfirmation(manager, item.order_id, order);
+          } catch (err) {
+            console.error(
+              `COD payment confirmation failed for order ${item.order_id}:`,
+              err,
+            );
+          }
+        }
       }
     }
     await createNotificationService({

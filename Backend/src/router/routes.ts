@@ -8,6 +8,8 @@ import reviewRouter from "./review.router.js";
 import addressRouter from "./address.router.js";
 import sellerRouter from "./seller.router.js";
 import notificationRouter from "./notification.router.js";
+import paymentRouter from "./payment.router.js";
+import adminRouter from "./admin.router.js";
 
 const router = new Router({prefix:"/api"});
 
@@ -28,5 +30,9 @@ router.use(addressRouter.routes(), addressRouter.allowedMethods());
 router.use(sellerRouter.routes(), sellerRouter.allowedMethods());
 
 router.use(notificationRouter.routes(),notificationRouter.allowedMethods());
+
+router.use(paymentRouter.routes(),paymentRouter.allowedMethods());
+
+router.use(adminRouter.routes(),adminRouter.allowedMethods());
 
 export default router;

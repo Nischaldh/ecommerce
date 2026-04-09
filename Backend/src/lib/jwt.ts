@@ -1,11 +1,6 @@
 import jwt from "jsonwebtoken";
-
-
 import { JwtPayload } from "../types/global.types.js";
 import env from "./env.js";
-
-
-
 
 export const generateToken = (user:JwtPayload)=>{
     return jwt.sign({

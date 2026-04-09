@@ -1,7 +1,10 @@
 import { CartItem } from "../entity/CartItem.js";
+import { Commission } from "../entity/Commission.js";
 import { Delivery } from "../entity/Delivery.js";
 import { Order } from "../entity/Order.js";
 import { OrderItem } from "../entity/OrderItems.js";
+import { PaymentTransaction } from "../entity/PaymentTransaction.js";
+import { Payout } from "../entity/Payout.js";
 import { Product } from "../entity/Product.js";
 import { Review } from "../entity/Review.js";
 import { UserAddress } from "../entity/UserAddresses.js";
@@ -13,6 +16,7 @@ import {
   IOrderItemResponse,
   IOrderResponse,
 } from "../types/order.schema.js";
+import { IPaymentTransactionResponse, IPayoutResponse, ISellerCommissionResponse } from "../types/payment.schema.js";
 import { IProductResponse } from "../types/product.schema.js";
 import { IReviewResponse } from "../types/review.schema.js";
 
@@ -144,4 +148,49 @@ export const mapReview = (review: Review): IReviewResponse => ({
   },
   createdAt: review.createdAt,
   updatedAt: review.updatedAt,
+});
+
+export const mapTx = (tx: PaymentTransaction): IPaymentTransactionResponse => ({
+  id: tx.id,
+  order_id: tx.order_id,
+  method: tx.method,
+  status: tx.status,
+  amount: tx.amount,
+  pidx: tx.pidx,
+  transactionId: tx.transactionId,
+  createdAt: tx.createdAt,
+});
+
+
+export const mapPayout = (p: Payout): IPayoutResponse => ({
+  id: p.id,
+  seller_id: p.seller_id,
+  sellerName: p.seller?.name ?? null,
+  amount: p.amount,
+  status: p.status,
+  method: p.method,
+  payoutReference: p.payoutReference,
+  notes: p.notes,
+  createdAt: p.createdAt,
+});
+
+export const mapSellerCommission = (
+  c: Commission & {
+    releaseDate?: Date | null;
+  },
+): ISellerCommissionResponse => ({
+  id: c.id,
+  order_id: c.order_id,
+  productName: c.orderItem?.productName ?? "Unknown",
+  productImage: c.orderItem?.product?.primaryImage ?? null,
+  quantity: c.orderItem?.quantity ?? 0,
+  itemAmount: Number(c.itemAmount),
+  commissionRate: Number(c.commissionRate),
+  commissionAmount: Number(c.commissionAmount),
+  sellerAmount: Number(c.sellerAmount),
+  status: c.status,
+  orderStatus: c.order?.status ?? null,
+  paymentStatus: c.order?.paymentStatus ?? null,
+  releaseDate: c.releaseDate ?? null,
+  createdAt: c.createdAt,
 });

@@ -19,7 +19,7 @@ export class Review {
   product_id!: string;
 
   @Column({ type: "int" })
-  rating!: number; // 1–5
+  rating!: number;
 
   @Column({ type: "text", nullable: true })
   comment!: string | null;

@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
-import { User, Package, ShoppingBag } from "lucide-react";
+import { User, Package, ShoppingBag, BarChart2 } from "lucide-react";
 import { useAuth } from "@/hooks/auth/useAuth";
 import ProfileSettings from "@/components/Profile/ProfileSettings";
 import MyProducts from "@/components/Profile/MyProducts";
 import SellerOrders from "@/components/Profile/SellerOrders";
 import { useSearchParams } from "react-router-dom";
+import SellerDashboard from "@/components/Profile/SellerDashboard";
 
 const tabs = [
   { id: "profile", label: "Profile", icon: User, roles: ["buyer", "seller"] },
   { id: "orders", label: "My Orders", icon: ShoppingBag, roles: ["seller"] },
   { id: "products", label: "My Products", icon: Package, roles: ["seller"] },
+    { id: "dashboard", label: "Dashboard", icon: BarChart2, roles: ["seller"] },
 ];
 
 const Profile = () => {
@@ -80,6 +82,8 @@ const Profile = () => {
         {activeTab === "profile" && <ProfileSettings />}
         {activeTab === "orders" && user?.role === "seller" && <SellerOrders />}
         {activeTab === "products" && user?.role === "seller" && <MyProducts />}
+        {activeTab === "dashboard" && user?.role === "seller" && <SellerDashboard />}
+
       </div>
     </div>
   );

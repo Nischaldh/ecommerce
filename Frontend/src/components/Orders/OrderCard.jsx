@@ -1,13 +1,15 @@
 import { Link } from "react-router-dom";
 import { X, ChevronRight } from "lucide-react";
 import { statusConfig } from "@/constants/constants";
+import { useState } from "react";
+import RefundModal from "./RefundModal";
 
-
-const OrderCard = ({ order, onCancel, cancellingId, canCancel }) => {
+const OrderCard = ({ order, onCancel, cancellingId, canCancel, canRequestRefund }) => {
   const firstItem = order.items?.[0];
   const extraItems = (order.items?.length || 0) - 1;
   const status = statusConfig[order.status] || statusConfig.PENDING;
   const isCancelling = cancellingId === order.id;
+  const [refundModal, setRefundModal] = useState(false);
 
   const formattedDate = new Date(order.createdAt).toLocaleDateString("en-US", {
     year: "numeric",
@@ -17,7 +19,6 @@ const OrderCard = ({ order, onCancel, cancellingId, canCancel }) => {
 
   return (
     <div className="bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-sm transition-shadow">
-
       {/* Order header */}
       <div className="flex items-center justify-between px-4 py-3 bg-gray-50 border-b border-gray-100">
         <div className="flex items-center gap-3 min-w-0">
@@ -35,7 +36,9 @@ const OrderCard = ({ order, onCancel, cancellingId, canCancel }) => {
         </div>
 
         {/* Status badge */}
-        <span className={`flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full border ${status.color}`}>
+        <span
+          className={`flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full border ${status.color}`}
+        >
           <span className={`size-1.5 rounded-full ${status.dot}`} />
           {status.label}
         </span>
@@ -43,7 +46,6 @@ const OrderCard = ({ order, onCancel, cancellingId, canCancel }) => {
 
       {/* Items preview */}
       <div className="p-4 flex items-center gap-4">
-
         {/* Primary image */}
         <Link to={`/orders/${order.id}`} className="shrink-0">
           <div className="size-16 sm:size-20 rounded-lg overflow-hidden bg-gray-100">
@@ -69,7 +71,9 @@ const OrderCard = ({ order, onCancel, cancellingId, canCancel }) => {
               +{extraItems} more {extraItems === 1 ? "item" : "items"}
             </p>
           )}
-          <p className="text-xs text-gray-400 mt-1 sm:hidden">{formattedDate}</p>
+          <p className="text-xs text-gray-400 mt-1 sm:hidden">
+            {formattedDate}
+          </p>
         </div>
 
         {/* Price + actions */}
@@ -89,6 +93,23 @@ const OrderCard = ({ order, onCancel, cancellingId, canCancel }) => {
                 <X className="size-3" />
                 {isCancelling ? "..." : "Cancel"}
               </button>
+            )}
+            {canRequestRefund && canRequestRefund(order) && (
+              <button
+                onClick={() => setRefundModal(true)}
+                className="flex items-center gap-1 px-2.5 py-1 text-xs border border-orange-200 text-orange-500 rounded-lg hover:bg-orange-50 transition-colors"
+              >
+                Refund
+              </button>
+            )}
+
+            {refundModal && (
+              <RefundModal
+                orderId={order.id}
+                onClose={() => setRefundModal(false)}
+                onSuccess={() => {
+                }}
+              />
             )}
 
             {/* View details */}

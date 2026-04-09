@@ -74,6 +74,15 @@ export const useOrdersPage = () => {
   
   const canCancel = (order) => order.status === "PENDING";
 
+  const canRequestRefund = (order) => {
+  if (order.paymentStatus !== "PAID") return false;
+  if (order.status === "CANCELLED") return false;
+  const paid = new Date(order.updatedAt);
+  const daysSince = (Date.now() - paid.getTime()) / (1000 * 60 * 60 * 24);
+  return daysSince <= 14;
+};
+
+
   return {
     orders: filteredOrders,
     total,
@@ -88,5 +97,7 @@ export const useOrdersPage = () => {
     handlePageChange,
     handleCancel,
     canCancel,
+    canRequestRefund,
+
   };
 };

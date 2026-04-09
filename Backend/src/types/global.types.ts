@@ -86,3 +86,46 @@ export enum NotificationType {
   PAYOUT_PROCESSED = "PAYOUT_PROCESSED",
   DELIVERY_UPDATED = "DELIVERY_UPDATED",
 }
+
+export enum CommissionStatus {
+  PENDING   = "PENDING",   
+  CONFIRMED = "CONFIRMED",  
+  RELEASED  = "RELEASED",   
+  REFUNDED  = "REFUNDED",
+}
+
+export enum PayoutStatus {
+  PENDING    = "PENDING",
+  PROCESSING = "PROCESSING",
+  COMPLETED  = "COMPLETED",
+  FAILED     = "FAILED",
+}
+
+export enum PayoutMethod {
+  KHALTI      = "KHALTI",
+}
+
+export enum TransactionStatus {
+  INITIATED  = "INITIATED",
+  PENDING    = "PENDING",
+  COMPLETED  = "COMPLETED",
+  FAILED     = "FAILED",
+  REFUNDED   = "REFUNDED",
+}
+
+export enum PaymentMethod {
+  KHALTI = "KHALTI",
+  COD    = "COD",
+}
+
+export enum AdminRole {
+  SUPER_ADMIN = "super_admin",
+  ADMIN = "admin",
+}
+
+export enum RefundStatus {
+  REQUESTED = "REQUESTED", 
+  APPROVED  = "APPROVED",    
+  COMPLETED = "COMPLETED",  
+  REJECTED  = "REJECTED",    
+}

@@ -106,3 +106,17 @@ export const statusTabs = [
   { label: "Completed", value: "COMPLETED" },
   { label: "Cancelled", value: "CANCELLED" },
 ];
+
+export const dashboardStatusConfig = {
+  PENDING: { label: "Pending", color: "bg-yellow-100 text-yellow-700" },
+  CONFIRMED: { label: "Confirmed", color: "bg-blue-100 text-blue-700" },
+  RELEASED: { label: "Released", color: "bg-green-100 text-green-700" },
+  REFUNDED: { label: "Refunded", color: "bg-red-100 text-red-700" },
+};
+
+export const paymentStatusConfig = {
+  UNPAID: { label: "Unpaid", color: "text-yellow-600" },
+  PAID: { label: "Paid", color: "text-green-600" },
+  REFUNDED: { label: "Refunded", color: "text-red-600" },
+};
+

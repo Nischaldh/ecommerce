@@ -19,6 +19,7 @@ import Sellers from "./pages/Sellers";
 import SellerDetail from "./pages/SellerDetail";
 import Profile from "./pages/Profile";
 import { useSocket } from "./hooks/useSocket";
+import PaymentVerify from "./pages/PaymentVerify";
 
 const App = () => {
   useSocket();
@@ -30,6 +31,8 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<Products />} />
         <Route path="/products/:id" element={<ProductDetail />} />
+        <Route path="/payment/verify" element={<PaymentVerify />} />
+
         {/* Auth Route */}
         <Route
           path="/login"

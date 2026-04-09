@@ -1,10 +1,9 @@
 import AddressForm from "@/components/Checkout/AddressForm";
+import PaymentMethodSelector from "@/components/Checkout/PaymentMethodSelector";
 import SavedAddresses from "@/components/Checkout/SavedAddress";
 import SellerGroup from "@/components/Checkout/SellerGroup";
 import { useCheckout } from "@/hooks/checkout/useCheckout";
 import { MapPin, Plus, ShoppingBag } from "lucide-react";
-
-
 
 const Checkout = () => {
   const {
@@ -22,16 +21,21 @@ const Checkout = () => {
     orderTotal,
     placingOrder,
     handlePlaceOrder,
+    paymentMethod,
+    setPaymentMethod
   } = useCheckout();
 
   return (
     <div className="py-6 flex flex-col lg:flex-row gap-6 items-start">
-
       {/* ── Left — Delivery Address ── */}
       <div className="flex flex-col gap-5 flex-1 min-w-0 w-full">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Checkout</h1>
-          <p className="text-sm text-gray-500 mt-1">Review your order and add delivery details</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+            Checkout
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Review your order and add delivery details
+          </p>
         </div>
 
         {/* Delivery address card */}
@@ -85,6 +89,13 @@ const Checkout = () => {
             </>
           )}
         </div>
+        {/* Payment method */}
+        <div className="bg-white border border-gray-100 rounded-xl p-5">
+          <PaymentMethodSelector
+            paymentMethod={paymentMethod}
+            setPaymentMethod={setPaymentMethod}
+          />
+        </div>
       </div>
 
       {/* ── Right — Order Summary ── */}
@@ -93,7 +104,8 @@ const Checkout = () => {
           <div className="flex items-center justify-between">
             <h2 className="font-bold text-gray-900">Order Summary</h2>
             <span className="text-sm text-gray-500">
-              {itemsToCheckout.length} {itemsToCheckout.length === 1 ? "item" : "items"}
+              {itemsToCheckout.length}{" "}
+              {itemsToCheckout.length === 1 ? "item" : "items"}
             </span>
           </div>
 
@@ -108,8 +120,8 @@ const Checkout = () => {
           {itemsBySeller.length > 1 && (
             <div className="bg-blue-50 border border-blue-100 rounded-lg px-3 py-2">
               <p className="text-xs text-blue-600">
-                Your cart has items from {itemsBySeller.length} sellers.
-                Each seller's items will be fulfilled separately.
+                Your cart has items from {itemsBySeller.length} sellers. Each
+                seller's items will be fulfilled separately.
               </p>
             </div>
           )}

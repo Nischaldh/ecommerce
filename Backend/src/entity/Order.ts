@@ -5,7 +5,7 @@ import {
 } from "typeorm";
 import { User } from "./User.js";
 
-import { OrderStatus, PaymentStatus } from "../types/global.types.js";
+import { OrderStatus, PaymentMethod, PaymentStatus } from "../types/global.types.js";
 import { OrderItem } from "./OrderItems.js";
 
 
@@ -55,6 +55,14 @@ export class Order {
 
   @Column({ type: "text", nullable: true, name:"payment_reference" })
   paymentReference!: string | null;
+
+  @Column({
+  type: "enum",
+  enum: PaymentMethod,
+  nullable: true,
+  name: "payment_method",
+})
+paymentMethod!: PaymentMethod | null;
 
  
    @CreateDateColumn({

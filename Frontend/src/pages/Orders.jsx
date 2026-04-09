@@ -20,6 +20,7 @@ const Orders = () => {
     handlePageChange,
     handleCancel,
     canCancel,
+    canRequestRefund,
   } = useOrdersPage();
 
   return (
@@ -96,6 +97,8 @@ const Orders = () => {
               onCancel={handleCancel}
               cancellingId={cancellingId}
               canCancel={canCancel}
+              canRequestRefund={canRequestRefund}
+
             />
           ))}
         </div>

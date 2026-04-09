@@ -6,8 +6,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
 import { addressSchema } from "@/validations/validations";
 import { useOrders } from "./useOrder";
-import { getOrderByIdService, updateOrderAddressService } from "@/services/order.service";
-
+import {
+  getOrderByIdService,
+  updateOrderAddressService,
+} from "@/services/order.service";
+import { requestRefundService } from "@/services/payment.service";
 
 export const useOrderDetail = () => {
   const { id } = useParams();
@@ -62,7 +65,7 @@ export const useOrderDetail = () => {
   const canCancel =
     order?.status === "PENDING" &&
     !order?.items?.some(
-      (i) => i.status === "SHIPPED" || i.status === "DELIVERED"
+      (i) => i.status === "SHIPPED" || i.status === "DELIVERED",
     );
 
   const canEditAddress = order?.status === "PENDING";
@@ -77,6 +80,28 @@ export const useOrderDetail = () => {
         status: "CANCELLED",
         items: prev.items.map((i) => ({ ...i, status: "CANCELLED" })),
       }));
+
+      if (
+        order?.paymentStatus === "PAID" &&
+        order?.paymentMethod === "KHALTI"
+      ) {
+        const refundRes = await requestRefundService({
+          orderId: id,
+          reason: "Order cancelled by buyer before processing",
+        });
+        if (refundRes.success) {
+          toast.success(
+            "Order cancelled. Refund request submitted automatically.",
+          );
+        } else {
+          toast.success("Order cancelled.");
+          toast.error(
+            `Refund request failed: ${refundRes.message}. Please request manually.`,
+          );
+        }
+      } else {
+        toast.success("Order cancelled successfully.");
+      }
     }
     setCancelling(false);
   };
@@ -91,7 +116,7 @@ export const useOrderDetail = () => {
     setSavingAddress(true);
     const res = await updateOrderAddressService(id, data);
     if (res.success) {
-      setOrder(res.order); 
+      setOrder(res.order);
       setEditingAddress(false);
       toast.success("Address updated successfully");
     } else {
@@ -104,6 +129,14 @@ export const useOrderDetail = () => {
     setEditingAddress(false);
     reset();
   };
+  const canRequestRefund = (order) => {
+  if (order.paymentStatus !== "PAID") return false;
+  if (order.status === "CANCELLED") return false;
+  const paid = new Date(order.updatedAt);
+  const daysSince = (Date.now() - paid.getTime()) / (1000 * 60 * 60 * 24);
+  return daysSince <= 14;
+};
+
 
   return {
     order,
@@ -120,5 +153,6 @@ export const useOrderDetail = () => {
     handleCancelEditAddress,
     register,
     errors,
+    canRequestRefund
   };
 };
