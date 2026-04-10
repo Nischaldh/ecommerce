@@ -35,7 +35,7 @@ export const updateProfileService = async (
 ): Promise<successResponse> => {
   const user = await userRepository.findOne({
     where: { id: userId },
-    select: ["id", "name", "email", "password", "role", "profilePic", "status"], // include password
+    select: ["id", "name", "email", "password", "role", "profilePic", "status"],
   });
 
   if (!user) throw new NotFoundError("User not found");

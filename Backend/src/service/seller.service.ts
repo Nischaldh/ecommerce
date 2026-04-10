@@ -57,7 +57,7 @@ export const getSellerByIdService = async (
 
   if (!seller) throw new NotFoundError("Seller not found");
 
-  // get total product count and average rating for this seller
+
   const stats = await productRepository
     .createQueryBuilder("product")
     .select("COUNT(product.id)", "totalProducts")
@@ -93,7 +93,7 @@ export const getSellerProductsService = async (
   const { name, minPrice, maxPrice, sort, minRating, page = 1, pageSize = 10 } = query;
   const skip = (page - 1) * pageSize;
 
-  // verify seller exists
+
   const seller = await userRepository.findOne({
     where: { id: sellerId, role: userRole.SELLER },
   });

@@ -22,7 +22,7 @@ export const adminAuthMiddleware = async (ctx: Context, next: Next) => {
     throw new AuthenticationError("Invalid or expired admin token");
   }
 
-  // verify admin still exists and is active in DB
+
   const admin = await adminRepo.findOne({
     where: { id: payload.id, isActive: true },
   });

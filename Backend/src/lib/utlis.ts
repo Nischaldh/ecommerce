@@ -16,7 +16,11 @@ import {
   IOrderItemResponse,
   IOrderResponse,
 } from "../types/order.schema.js";
-import { IPaymentTransactionResponse, IPayoutResponse, ISellerCommissionResponse } from "../types/payment.schema.js";
+import {
+  IPaymentTransactionResponse,
+  IPayoutResponse,
+  ISellerCommissionResponse,
+} from "../types/payment.schema.js";
 import { IProductResponse } from "../types/product.schema.js";
 import { IReviewResponse } from "../types/review.schema.js";
 
@@ -67,8 +71,8 @@ export const mapOrderItem = (item: OrderItem): IOrderItemResponse => ({
   seller_id: item.seller_id,
   productName: item.productName,
   primaryImage: item.product?.primaryImage ?? "",
-  sellerName: item.seller?.name ?? "",           
-  sellerProfilePic: item.seller?.profilePic ?? null, 
+  sellerName: item.seller?.name ?? "",
+  sellerProfilePic: item.seller?.profilePic ?? null,
   priceAtPurchase: item.priceAtPurchase,
   quantity: item.quantity,
   subtotal: item.subtotal,
@@ -89,9 +93,11 @@ export const mapOrder = (order: Order): IOrderResponse => ({
   totalAmount: order.totalAmount,
   status: order.status,
   paymentStatus: order.paymentStatus,
+  paymentMethod: order.paymentMethod ?? null,
   shippingAddress: order.shippingAddress,
   paymentReference: order.paymentReference,
   createdAt: order.createdAt,
+  refundStatus: null,
   updatedAt: order.updatedAt,
 });
 
@@ -160,7 +166,6 @@ export const mapTx = (tx: PaymentTransaction): IPaymentTransactionResponse => ({
   transactionId: tx.transactionId,
   createdAt: tx.createdAt,
 });
-
 
 export const mapPayout = (p: Payout): IPayoutResponse => ({
   id: p.id,

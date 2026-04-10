@@ -1,10 +1,13 @@
 import { statusConfig } from "@/constants/constants";
+import { getEffectiveOrderStatus } from "@/lib/orderStatus";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
 
 const OrderDetailHeader = ({ order }) => {
-  const status = statusConfig[order.status] || statusConfig.PENDING;
+ const effectiveStatus = getEffectiveOrderStatus(order);
+  const status = statusConfig[effectiveStatus] || statusConfig.PENDING;
+
   const formattedDate = new Date(order.createdAt).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",

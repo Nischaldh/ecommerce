@@ -29,10 +29,14 @@ const orderSlice = createSlice({
       state.total += 1;
     },
     updateOrderStatus: (state, action) => {
-      const order = state.orders.find((o) => o.id === action.payload.id);
-      if (order) order.status = action.payload.status;
-      if (state.selectedOrder?.id === action.payload.id) {
-        state.selectedOrder.status = action.payload.status;
+      const { orderId, status, paymentStatus, itemStatus } = action.payload;
+      const order = state.orders.find((o) => o.id === orderId);
+      if (order) {
+        order.status = status;
+        if (paymentStatus) order.paymentStatus = paymentStatus;
+        if (itemStatus && order.items) {
+          order.items = order.items.map((i) => ({ ...i, status }));
+        }
       }
     },
     setOrderFilters: (state, action) => {
@@ -53,6 +57,7 @@ const orderSlice = createSlice({
       const item = state.sellerItems.find((i) => i.id === action.payload.id);
       if (item) item.status = action.payload.status;
     },
+
     setLoading: (state, action) => {
       state.loading = action.payload;
     },

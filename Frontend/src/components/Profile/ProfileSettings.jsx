@@ -2,6 +2,7 @@ import { useProfile } from "@/hooks/profile/useProfile";
 import AvatarUpload from "./AvatarUpload";
 import UpdateNameEmail from "./UpdateNameEmail";
 import ChangePassword from "./ChangePassword";
+import SellerPaymentInfo from "./SellerPaymentInfo";
 
 
 const ProfileSettings = () => {
@@ -60,6 +61,13 @@ const ProfileSettings = () => {
         passwordErrors={passwordErrors}
         passwordSubmitting={passwordSubmitting}
       />
+            {user?.role === "seller" && (
+        <>
+          <hr className="border-gray-100" />
+          <SellerPaymentInfo />
+        </>
+      )}
+
     </div>
   );
 };

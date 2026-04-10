@@ -43,14 +43,14 @@ export const verifyKhaltiPayment = async (pidx: string) => {
 };
 
 export const initiateKhaltiTransfer = async (params: {
-  amount: number;        // in rupees — will convert to paisa
-  receiverKhaltiId: string; // receiver's phone number on Khalti
+  amount: number;        
+  receiverKhaltiId: string; 
   remarks: string;
 }) => {
   const res = await axios.post(
     `${KHALTI_BASE}/payment/transfer/`,
     {
-      amount: Math.round(params.amount * 100), // to paisa
+      amount: Math.round(params.amount * 100),
       mobile: params.receiverKhaltiId,
       remarks: params.remarks,
     },

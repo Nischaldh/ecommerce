@@ -41,15 +41,13 @@ export class PaymentTransaction {
   })
   amount!: number;
 
-  // Khalti's pidx (payment identifier) returned when initiating
   @Column({ type: "text", nullable: true })
   pidx!: string | null;
 
-  // Khalti's transaction ID returned after verification
+  
   @Column({ type: "text", nullable: true, name: "transaction_id" })
   transactionId!: string | null;
 
-  // raw Khalti response stored for audit
   @Column({ type: "jsonb", nullable: true, name: "gateway_response" })
   gatewayResponse!: Record<string, any> | null;
 

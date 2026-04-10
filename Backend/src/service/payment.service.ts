@@ -108,7 +108,7 @@ export const initiatePaymentService = async (
       });
       const saved = await manager.save(PaymentTransaction, tx);
 
-      // update order payment method
+  
       await manager.update(Order, orderId, {
         paymentMethod: PaymentMethod.COD,
       });
@@ -119,7 +119,7 @@ export const initiatePaymentService = async (
       amount: Number(order.totalAmount),
       orderId: order.id,
       orderName: `Order #${order.id.slice(0, 8).toUpperCase()}`,
-      returnUrl: `${env.FRONTEND_URL}/payment/verify`,
+      returnUrl: `${env.BACKEND_URL}/payments/khalti/verify`,
     });
 
     const tx = manager.create(PaymentTransaction, {
@@ -163,30 +163,35 @@ export const verifyKhaltiService = async (pidx: string) => {
       await manager.save(PaymentTransaction, tx);
       throw new BadRequestError(`Payment not completed: ${khaltiData.status}`);
     }
-    // mark transaction complete
+
     tx.status = TransactionStatus.COMPLETED;
     tx.transactionId = khaltiData.transaction_id;
     tx.gatewayResponse = khaltiData;
     tx.refundEligibleUntil = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
     await manager.save(PaymentTransaction, tx);
-    // mark order paid
+
     await manager.update(Order, tx.order_id, {
       paymentStatus: PaymentStatus.PAID,
       paymentReference: khaltiData.transaction_id,
     });
 
-    // load order items to process commissions
+    
+    const freshOrder = await manager.findOneOrFail(Order, {
+      where: { id: tx.order_id },
+      relations: ["items"],
+    });
+
     const items = await manager.find(OrderItem, {
       where: { order_id: tx.order_id },
     });
 
-    await processPaymentSuccess(manager, tx.order, items);
+    await processPaymentSuccess(manager, freshOrder, items);
 
     await createNotificationService({
       userId: tx.user_id,
       type: NotificationType.PAYMENT_RECEIVED,
       title: "Payment Successful",
-      message: `Your payment of Rs. ${tx.amount.toLocaleString()} was received.`,
+      message: `Your payment of Rs. ${Number(tx.amount).toLocaleString()} was received.`,
       orderId: tx.order_id,
     });
 
@@ -282,7 +287,7 @@ export const upsertPaymentInfoService = async (
   });
 
   if (info) {
-    // reset verification if Khalti ID changes
+   
     if (data.khaltiId && data.khaltiId !== info.khaltiId) {
       info.isVerified = false;
     }
@@ -402,14 +407,14 @@ export const getSellerCommissionsService = async (
 
   const [commissions, total] = await qb.getManyAndCount();
 
-  // fetch refund window dates for these orders
+  
   const orderIds = [...new Set(commissions.map((c) => c.order_id))];
 
   const transactions =
     orderIds.length > 0
       ? await AppDataSource.getRepository(PaymentTransaction).find({
           where: {
-            order_id: In(orderIds), // ← fixed
+            order_id: In(orderIds),
             status: TransactionStatus.COMPLETED,
           },
           select: ["order_id", "refundEligibleUntil"],

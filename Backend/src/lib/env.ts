@@ -15,6 +15,7 @@ type envSchema = {
   KHALTI_SECRET_KEY: string;
   KHATLI_BASE_URL?: string;
   ADMIN_JWT_SECRET: string;
+  BACKEND_URL?: string;
 };
 
 const env: envSchema = {
@@ -34,6 +35,7 @@ const env: envSchema = {
   KHALTI_SECRET_KEY: process.env.KHALTI_SECRET_KEY || "",
   KHATLI_BASE_URL: process.env.KHALTI_BASE_URL || "https://dev.khalti.com/api/v2",
   ADMIN_JWT_SECRET: process.env.ADMIN_JWT_SECRET || "@DMIN",
+  BACKEND_URL: process.env.BACKEND_URL || "http://localhost:4000/api",
 };
 
 export default env;

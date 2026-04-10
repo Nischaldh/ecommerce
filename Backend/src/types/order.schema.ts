@@ -44,7 +44,10 @@ export interface IOrderResponse {
   status: string;
   paymentStatus: string;
   shippingAddress: IShippingAddress;
+  paymentMethod: string | null;
   paymentReference: string | null;
+  refundStatus: string | null;  
+  refundReason?: string | null;  
   createdAt: Date;
   updatedAt: Date;
 }

@@ -18,8 +18,6 @@ export const useSellerDashboard = () => {
 
   const debouncedSearch = useDebounce(searchInput, 500);
   const totalPages = Math.ceil(total / pageSize);
-
-  // fetch stats once
   useEffect(() => {
     const load = async () => {
       setStatsLoading(true);
@@ -31,7 +29,7 @@ export const useSellerDashboard = () => {
     load();
   }, []);
 
-  // fetch commissions when search changes
+  
   useEffect(() => {
     const load = async () => {
       setLoading(true);

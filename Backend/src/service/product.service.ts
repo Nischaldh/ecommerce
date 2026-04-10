@@ -36,7 +36,7 @@ export const createProductService = async (
     await productImageRepository.save(imageEntities);
   }
 
-  //   response with product details and user name and id
+
   const fullProduct = await productRepository.findOne({
     where: { id: savedProduct.id },
     relations: ["images", "seller"],

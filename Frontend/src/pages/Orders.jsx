@@ -3,8 +3,6 @@ import { useOrdersPage } from "@/hooks/orders/useOrdersPage";
 import OrderCard from "@/components/Orders/OrderCard";
 import OrderSkeleton from "@/components/Orders/OrderSkeleton";
 
-
-
 const Orders = () => {
   const {
     orders,
@@ -21,14 +19,16 @@ const Orders = () => {
     handleCancel,
     canCancel,
     canRequestRefund,
+    getRefundLabel,
   } = useOrdersPage();
 
   return (
     <div className="py-6 flex flex-col gap-6">
-
       {/* Page header */}
       <div>
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">My Orders</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+          My Orders
+        </h1>
         <p className="text-sm text-gray-500 mt-1">
           {total} {total === 1 ? "order" : "orders"} total
         </p>
@@ -98,7 +98,7 @@ const Orders = () => {
               cancellingId={cancellingId}
               canCancel={canCancel}
               canRequestRefund={canRequestRefund}
-
+              getRefundLabel={getRefundLabel}
             />
           ))}
         </div>
@@ -116,7 +116,10 @@ const Orders = () => {
           </button>
 
           {Array.from({ length: totalPages }, (_, i) => i + 1)
-            .filter((p) => p === 1 || p === totalPages || Math.abs(p - filters.page) <= 1)
+            .filter(
+              (p) =>
+                p === 1 || p === totalPages || Math.abs(p - filters.page) <= 1,
+            )
             .reduce((acc, p, idx, arr) => {
               if (idx > 0 && p - arr[idx - 1] > 1) acc.push("...");
               acc.push(p);
@@ -124,7 +127,9 @@ const Orders = () => {
             }, [])
             .map((p, i) =>
               p === "..." ? (
-                <span key={`e-${i}`} className="px-2 text-gray-400 text-sm">...</span>
+                <span key={`e-${i}`} className="px-2 text-gray-400 text-sm">
+                  ...
+                </span>
               ) : (
                 <button
                   key={p}
@@ -137,7 +142,7 @@ const Orders = () => {
                 >
                   {p}
                 </button>
-              )
+              ),
             )}
 
           <button

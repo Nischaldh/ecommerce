@@ -55,3 +55,9 @@ export const addProductSchema = yup.object({
   category: yup.string().required("Category is required"),
   stock: yup.number().min(0).required("Stock is required"),
 });
+
+export const paymentSchema = yup.object({
+  payoutPreference: yup.string().oneOf(["KHALTI", "BANK"]).required(),
+  khaltiId: yup.string().trim().nullable().optional(),
+  khaltiName: yup.string().trim().nullable().optional(),
+});

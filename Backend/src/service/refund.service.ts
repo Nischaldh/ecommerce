@@ -4,7 +4,11 @@ import { Order } from "../entity/Order.js";
 import { Commission } from "../entity/Commission.js";
 import { SellerBalance } from "../entity/SellerBalance.js";
 import { PaymentTransaction } from "../entity/PaymentTransaction.js";
-import { BadRequestError, ForbiddenError, NotFoundError } from "../lib/erros.js";
+import {
+  BadRequestError,
+  ForbiddenError,
+  NotFoundError,
+} from "../lib/erros.js";
 import {
   CommissionStatus,
   OrderStatus,
@@ -21,7 +25,6 @@ const txRepository = AppDataSource.getRepository(PaymentTransaction);
 const commissionRepository = AppDataSource.getRepository(Commission);
 const balanceRepository = AppDataSource.getRepository(SellerBalance);
 
-// ── buyer requests refund ──
 export const requestRefundService = async (
   userId: string,
   orderId: string,
@@ -41,7 +44,7 @@ export const requestRefundService = async (
     throw new BadRequestError("Order is already cancelled");
   }
 
-  // check 14-day window
+ 
   const tx = await txRepository.findOne({
     where: { order_id: orderId, status: TransactionStatus.COMPLETED },
     order: { createdAt: "DESC" },
@@ -51,18 +54,21 @@ export const requestRefundService = async (
 
   if (tx.refundEligibleUntil && new Date() > tx.refundEligibleUntil) {
     throw new BadRequestError(
-      "Refund window has expired. Refunds are only allowed within 14 days of payment."
+      "Refund window has expired. Refunds are only allowed within 14 days of payment.",
     );
   }
 
-  // check no existing active refund request
+ 
   const existing = await refundRepository.findOne({
-    where: {
-      order_id: orderId,
-      status: RefundStatus.REQUESTED,
-    },
+    where: { order_id: orderId, user_id: userId }, 
   });
-  if (existing) throw new BadRequestError("A refund request already exists for this order");
+  if (existing) {
+    throw new BadRequestError(
+      existing.status === RefundStatus.REJECTED
+        ? "Your refund request was rejected. Contact support for assistance."
+        : `A refund request already exists for this order (${existing.status.toLowerCase()}).`,
+    );
+  }
 
   const refund = refundRepository.create({
     order_id: orderId,
@@ -100,21 +106,23 @@ export const approveRefundService = async (
   if (!tx) throw new NotFoundError("Payment transaction not found");
 
   return await AppDataSource.transaction(async (manager) => {
-    // reverse seller balances — deduct from pending (commissions not yet released)
+   
     const commissions = await manager.find(Commission, {
       where: { order_id: refund.order_id },
     });
 
     for (const commission of commissions) {
       if (commission.status === CommissionStatus.RELEASED) {
-        // if already released to available balance — deduct from available
+     
         const balance = await manager.findOne(SellerBalance, {
           where: { seller_id: commission.seller_id },
         });
         if (balance) {
           balance.availableAmount = Math.max(
             0,
-            parseFloat((balance.availableAmount - commission.sellerAmount).toFixed(2))
+            parseFloat(
+              (balance.availableAmount - commission.sellerAmount).toFixed(2),
+            ),
           );
           await manager.save(SellerBalance, balance);
         }
@@ -129,7 +137,9 @@ export const approveRefundService = async (
         if (balance) {
           balance.pendingAmount = Math.max(
             0,
-            parseFloat((balance.pendingAmount - commission.sellerAmount).toFixed(2))
+            parseFloat(
+              (balance.pendingAmount - commission.sellerAmount).toFixed(2),
+            ),
           );
           await manager.save(SellerBalance, balance);
         }
@@ -174,7 +184,6 @@ export const completeRefundService = async (
   const saved = await refundRepository.save(refund);
   return { refund: saved };
 };
-
 
 export const rejectRefundService = async (
   refundId: string,

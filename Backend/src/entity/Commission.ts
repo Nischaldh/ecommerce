@@ -28,7 +28,7 @@ export class Commission {
     transformer: { to: (v: number) => v, from: (v: string) => parseFloat(v) },
     name: "item_amount",
   })
-  itemAmount!: number;         // subtotal of the order item
+  itemAmount!: number;        
 
   @Column({
     type: "decimal", precision: 5, scale: 4,
@@ -42,14 +42,13 @@ export class Commission {
     transformer: { to: (v: number) => v, from: (v: string) => parseFloat(v) },
     name: "commission_amount",
   })
-  commissionAmount!: number;   // itemAmount * commissionRate
-
+  commissionAmount!: number;   
   @Column({
     type: "decimal", precision: 10, scale: 2,
     transformer: { to: (v: number) => v, from: (v: string) => parseFloat(v) },
     name: "seller_amount",
   })
-  sellerAmount!: number;       // itemAmount - commissionAmount
+  sellerAmount!: number;       
 
   @Column({
     type: "enum",

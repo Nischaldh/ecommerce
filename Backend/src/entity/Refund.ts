@@ -2,6 +2,7 @@ import {
   Entity, PrimaryGeneratedColumn, Column,
   ManyToOne, JoinColumn, CreateDateColumn,
   UpdateDateColumn, Relation,
+  Unique,
 } from "typeorm";
 import { Order } from "./Order.js";
 import { User } from "./User.js";
@@ -10,6 +11,7 @@ import { RefundStatus } from "../types/global.types.js";
 
 
 @Entity("refunds")
+@Unique(["order_id", "user_id"]) 
 export class Refund {
   @PrimaryGeneratedColumn("uuid")
   id!: string;

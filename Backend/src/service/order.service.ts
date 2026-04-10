@@ -32,12 +32,17 @@ import {
 import { Delivery } from "../entity/Delivery.js";
 import { ICreateAddress } from "../types/address.schema.js";
 import { createNotificationService } from "./notification.service.js";
-import { confirmCODPaymentService, processCODConfirmation } from "./payment.service.js";
+import {
+  confirmCODPaymentService,
+  processCODConfirmation,
+} from "./payment.service.js";
+import { Refund } from "../entity/Refund.js";
 
 const orderRepository = AppDataSource.getRepository(Order);
 const orderItemRepository = AppDataSource.getRepository(OrderItem);
 const cartRepository = AppDataSource.getRepository(Cart);
 const deliveryRepository = AppDataSource.getRepository(Delivery);
+const refundRepository = AppDataSource.getRepository(Refund);
 
 export const placeOrderService = async (
   userId: string,
@@ -157,8 +162,23 @@ export const getMyOrdersService = async (
     skip,
     take: pageSize,
   });
+  const orderIds = orders.map((o) => o.id);
+  const refunds =
+    orderIds.length > 0
+      ? await refundRepository.find({
+          where: orderIds.map((id) => ({ order_id: id, user_id: userId })),
+          select: ["order_id", "status"],
+        })
+      : [];
+  const refundMap = new Map(refunds.map((r) => [r.order_id, r.status]));
 
-  return { orders: orders.map(mapOrder), total };
+  return {
+    orders: orders.map((o) => ({
+      ...mapOrder(o),
+      refundStatus: refundMap.get(o.id) ?? null,
+    })),
+    total,
+  };
 };
 
 export const getOrderByIdService = async (
@@ -175,8 +195,17 @@ export const getOrderByIdService = async (
   if (order.user_id !== userId) {
     throw new ForbiddenError("Access denied");
   }
-
-  return { order: mapOrder(order) };
+  const refund = await refundRepository.findOne({
+    where: { order_id: orderId, user_id: userId },
+    select: ["status", "reason", "createdAt"],
+  });
+  return {
+    order: {
+      ...mapOrder(order),
+      refundStatus: refund?.status ?? null,
+      refundReason: refund?.reason ?? null,
+    },
+  };
 };
 
 export const cancelOrderService = async (
@@ -266,13 +295,14 @@ export const updateOrderItemStatusService = async (
     item.status = newStatus;
 
     const saved = await manager.save(OrderItem, item);
+    const allItems = await manager.find(OrderItem, {
+      where: { order_id: item.order_id },
+    });
+    const updatedItems = allItems.map((i) => (i.id === saved.id ? saved : i));
 
     if (newStatus === OrderItemStatus.DELIVERED) {
-      const allItems = await manager.find(OrderItem, {
-        where: { order_id: item.order_id },
-      });
-      const allDelivered = allItems.every(
-        (i) => i.id === item.id || i.status === OrderItemStatus.DELIVERED,
+      const allDelivered = updatedItems.every(
+        (i) => i.status === OrderItemStatus.DELIVERED,
       );
       if (allDelivered) {
         await manager.update(Order, item.order_id, {
@@ -280,7 +310,7 @@ export const updateOrderItemStatusService = async (
         });
         const order = await manager.findOne(Order, {
           where: { id: item.order_id },
-          relations: ["items"]        
+          relations: ["items"],
         });
 
         if (order?.paymentMethod === PaymentMethod.COD) {
@@ -295,6 +325,24 @@ export const updateOrderItemStatusService = async (
         }
       }
     }
+        if (newStatus === OrderItemStatus.CANCELLED) {
+      await manager.increment(
+        Product,
+        { id: item.product_id },
+        "stock",
+        item.quantity,
+      );
+
+      const allCancelled = updatedItems.every(
+        (i) => i.status === OrderItemStatus.CANCELLED,
+      );
+      if (allCancelled) {
+        await manager.update(Order, item.order_id, {
+          status: OrderStatus.CANCELLED,
+        });
+      }
+    }
+
     await createNotificationService({
       userId: item.order.user_id,
       type: NotificationType.ORDER_STATUS_UPDATED,
@@ -345,7 +393,6 @@ export const updateDeliveryService = async (
   return { delivery: mapDelivery(saved) };
 };
 
-// service/order.service.ts — add to existing file
 export const updateOrderAddressService = async (
   orderId: string,
   userId: string,

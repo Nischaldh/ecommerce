@@ -124,7 +124,7 @@ export const useCheckout = () => {
 
     setPlacingOrder(true);
 
-    // step 1 — place the order
+    
     const orderData = {
       shippingAddress,
       ...(cartItemIds.length > 0 && { cartItemIds }),
@@ -140,7 +140,7 @@ export const useCheckout = () => {
 
     const orderId = orderRes.order.id;
 
-    // step 2 — initiate payment
+  
     const paymentRes = await initiatePaymentService({
       orderId,
       method: paymentMethod,
@@ -149,7 +149,7 @@ export const useCheckout = () => {
     if (!paymentRes.success) {
       toast.error(paymentRes.message || "Failed to initiate payment");
       setPlacingOrder(false);
-      // order is placed but payment failed — go to orders page
+      
       navigate("/orders");
       return;
     }
@@ -159,7 +159,7 @@ export const useCheckout = () => {
       toast.success("Order placed successfully! Pay on delivery.");
       navigate(`/orders/${orderId}`);
     } else if (paymentMethod === "KHALTI") {
-      // redirect to Khalti payment page
+    
       setRedirectingToKhalti(true);
       emptyCart();
       toast.success("Redirecting to Khalti...");

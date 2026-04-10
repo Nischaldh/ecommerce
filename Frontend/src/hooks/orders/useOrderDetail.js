@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -11,17 +11,21 @@ import {
   updateOrderAddressService,
 } from "@/services/order.service";
 import { requestRefundService } from "@/services/payment.service";
+import { updateOrderStatus } from "@/store/slices/orderSlice";
+import { useDispatch } from "react-redux";
 
 export const useOrderDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { cancelOrder } = useOrders();
+  const dispatch = useDispatch();
 
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(false);
   const [editingAddress, setEditingAddress] = useState(false);
   const [savingAddress, setSavingAddress] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const {
     register,
@@ -44,6 +48,17 @@ export const useOrderDetail = () => {
     };
     load();
   }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const payment = searchParams.get("payment");
+    if (payment === "success") {
+      toast.success("Payment confirmed! Your order is now active.");
+      setSearchParams({}, { replace: true }); // clean the URL
+    } else if (payment === "failed") {
+      toast.error("Payment failed. Please try again from your orders.");
+      setSearchParams({}, { replace: true });
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const itemsBySeller = useMemo(() => {
     if (!order?.items) return [];
@@ -80,6 +95,7 @@ export const useOrderDetail = () => {
         status: "CANCELLED",
         items: prev.items.map((i) => ({ ...i, status: "CANCELLED" })),
       }));
+      dispatch(updateOrderStatus({ orderId: id, status: "CANCELLED" }));
 
       if (
         order?.paymentStatus === "PAID" &&
@@ -106,6 +122,8 @@ export const useOrderDetail = () => {
     setCancelling(false);
   };
 
+  
+
   const handleStartEditAddress = () => {
     if (!order) return;
     reset(order.shippingAddress);
@@ -130,13 +148,15 @@ export const useOrderDetail = () => {
     reset();
   };
   const canRequestRefund = (order) => {
-  if (order.paymentStatus !== "PAID") return false;
-  if (order.status === "CANCELLED") return false;
-  const paid = new Date(order.updatedAt);
-  const daysSince = (Date.now() - paid.getTime()) / (1000 * 60 * 60 * 24);
-  return daysSince <= 14;
-};
-
+    if (!order) return false;
+    if (order.paymentStatus !== "PAID") return false;
+    if (order.paymentMethod !== "KHALTI") return false;
+    if (order.status === "CANCELLED") return false;
+    if (order.refundStatus) return false;
+    const paid = new Date(order.updatedAt);
+    const daysSince = (Date.now() - paid.getTime()) / (1000 * 60 * 60 * 24);
+    return daysSince <= 14;
+  };
 
   return {
     order,
@@ -153,6 +173,7 @@ export const useOrderDetail = () => {
     handleCancelEditAddress,
     register,
     errors,
-    canRequestRefund
+    canRequestRefund,
+    refundStatus: order?.refundStatus ?? null,
   };
 };

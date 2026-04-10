@@ -1,4 +1,3 @@
-// components/Profile/DashboardStats.jsx
 import {
   TrendingUp,
   Clock,

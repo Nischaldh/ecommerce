@@ -50,7 +50,7 @@ export const createPayoutService = async (
       );
     }
 
-    // call Khalti transfer API
+   
     const transferRes = await initiateKhaltiTransfer({
       amount,
       receiverKhaltiId: paymentInfo.khaltiId,

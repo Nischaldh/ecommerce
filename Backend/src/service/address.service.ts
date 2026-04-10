@@ -71,7 +71,6 @@ export const updateAddressService = async (
 
   if (!address) throw new NotFoundError("Address not found");
 
-  // if setting this as default, unset the current default first
   if (data.isDefault) {
     await addressRepository.update(
       { user_id: userId, isDefault: true },

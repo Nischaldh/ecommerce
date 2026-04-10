@@ -21,6 +21,8 @@ const OrderDetail = () => {
     handleCancelEditAddress,
     register,
     errors,
+    refundStatus,
+    canRequestRefund,
   } = useOrderDetail();
 
   if (loading) return <OrderDetailSkeleton />;
@@ -56,6 +58,8 @@ const OrderDetail = () => {
             canCancel={canCancel}
             cancelling={cancelling}
             onCancel={handleCancel}
+            refundStatus={refundStatus}
+            canRequestRefund={canRequestRefund}
           />
         </div>
       </div>

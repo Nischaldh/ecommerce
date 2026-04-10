@@ -73,6 +73,16 @@ export const statusConfig = {
     color: "bg-yellow-100 text-yellow-700 border-yellow-200",
     dot: "bg-yellow-500",
   },
+   PROCESSING: {
+    label: "Processing",
+    color: "bg-blue-100 text-blue-700 border-blue-200",
+    dot: "bg-blue-500",
+  },
+  SHIPPED: {
+    label: "Shipped",
+    color: "bg-purple-100 text-purple-700 border-purple-200",
+    dot: "bg-purple-500",
+  },
   CONFIRMED: {
     label: "Confirmed",
     color: "bg-blue-100 text-blue-700 border-blue-200",
@@ -119,4 +129,12 @@ export const paymentStatusConfig = {
   PAID: { label: "Paid", color: "text-green-600" },
   REFUNDED: { label: "Refunded", color: "text-red-600" },
 };
+
+
+export const refundLabels = {
+    REQUESTED: { label: "Refund Requested", color: "bg-yellow-50 border-yellow-100 text-yellow-700" },
+    APPROVED:  { label: "Refund Approved",  color: "bg-blue-50 border-blue-100 text-blue-700" },
+    COMPLETED: { label: "Refund Completed", color: "bg-green-50 border-green-100 text-green-700" },
+    REJECTED:  { label: "Refund Rejected",  color: "bg-red-50 border-red-100 text-red-700" },
+  };
 

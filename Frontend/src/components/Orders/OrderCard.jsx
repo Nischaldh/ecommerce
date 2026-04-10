@@ -3,13 +3,28 @@ import { X, ChevronRight } from "lucide-react";
 import { statusConfig } from "@/constants/constants";
 import { useState } from "react";
 import RefundModal from "./RefundModal";
+import { getEffectiveOrderStatus } from "@/lib/orderStatus";
 
-const OrderCard = ({ order, onCancel, cancellingId, canCancel, canRequestRefund }) => {
+const OrderCard = ({
+  order,
+  onCancel,
+  cancellingId,
+  canCancel,
+  canRequestRefund,
+  getRefundLabel,
+}) => {
   const firstItem = order.items?.[0];
   const extraItems = (order.items?.length || 0) - 1;
-  const status = statusConfig[order.status] || statusConfig.PENDING;
   const isCancelling = cancellingId === order.id;
   const [refundModal, setRefundModal] = useState(false);
+  const [refundSubmitted, setRefundSubmitted] = useState(false);
+  const effectiveStatus = getEffectiveOrderStatus(order);
+  const status = statusConfig[effectiveStatus] || statusConfig.PENDING;
+
+  const effectiveRefundStatus = refundSubmitted ? "REQUESTED" : order.refundStatus;
+  const refundLabel = effectiveRefundStatus
+    ? getRefundLabel?.(effectiveRefundStatus)
+    : null;
 
   const formattedDate = new Date(order.createdAt).toLocaleDateString("en-US", {
     year: "numeric",
@@ -82,7 +97,7 @@ const OrderCard = ({ order, onCancel, cancellingId, canCancel, canRequestRefund 
             Rs. {Number(order.totalAmount).toLocaleString("en-NP")}
           </p>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             {/* Cancel button */}
             {canCancel(order) && (
               <button
@@ -94,21 +109,26 @@ const OrderCard = ({ order, onCancel, cancellingId, canCancel, canRequestRefund 
                 {isCancelling ? "..." : "Cancel"}
               </button>
             )}
-            {canRequestRefund && canRequestRefund(order) && (
+            {refundLabel ? (
+              <span
+                className={`text-xs font-medium px-2.5 py-1 rounded-lg border ${refundLabel.color}`}
+              >
+                {refundLabel.label}
+              </span>
+            ) : canRequestRefund && canRequestRefund(order) ? (
               <button
                 onClick={() => setRefundModal(true)}
                 className="flex items-center gap-1 px-2.5 py-1 text-xs border border-orange-200 text-orange-500 rounded-lg hover:bg-orange-50 transition-colors"
               >
-                Refund
+                Request Refund
               </button>
-            )}
+            ) : null}
 
             {refundModal && (
               <RefundModal
                 orderId={order.id}
                 onClose={() => setRefundModal(false)}
-                onSuccess={() => {
-                }}
+                onSuccess={() => setRefundSubmitted(true)}
               />
             )}
 

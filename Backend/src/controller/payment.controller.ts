@@ -42,8 +42,8 @@ export const verifyKhalti = async (ctx: Context) => {
 
   ctx.redirect(
     result.success
-      ? `${env.FRONTEND_URL}/orders/${result.orderId}?payment=success`
-      : `${env.FRONTEND_URL}/checkout?payment=failed`,
+      ? `${env.FRONTEND_URL}/orders/${result.orderId}`
+      : `${env.FRONTEND_URL}/checkout`,
   );
 };
 
