@@ -177,8 +177,6 @@ export const deleteReviewService = async (
   });
 };
 
-
-
 export const getProductReviewsService = async (
   id: string,
 ): Promise<{ reviews: IReviewResponse[]; total: number }> => {
@@ -192,7 +190,6 @@ export const getProductReviewsService = async (
 
   return { reviews: reviews.map(mapReview), total };
 };
-
 
 export const getReviewService = async (
   reviewId: string,

@@ -1,48 +1,49 @@
-export type LogContent =  {
-    method: string;
-    url: string;
-    host: string | undefined;
-    ms: number;
-}
+export type LogContent = {
+  method: string;
+  url: string;
+  host: string | undefined;
+  ms: number;
+};
 
-export enum userRole  {
-    BUYER ="buyer", 
-    SELLER = "seller"
+export enum userRole {
+  BUYER = "buyer",
+  SELLER = "seller",
 }
 
 export enum userStatus {
-    VERIFIED = "verified",
-    NOT_VERIFIED = "not_verified"
+  VERIFIED = "verified",
+  NOT_VERIFIED = "not_verified",
+  SUSPENDED = "suspended",
+  DELETED = "deleted",
 }
 
 export type JwtPayload = {
-    id: string;
-    email: string;
-    role: userRole;
-}
+  id: string;
+  email: string;
+  role: userRole;
+};
 
-export type successResponse ={
-    success:boolean;
-    message:string,
-}
-
+export type successResponse = {
+  success: boolean;
+  message: string;
+};
 
 export type queryType = {
-    name?: string;
-    category?: string;
-    minPrice?: number;
-    maxPrice?: number;
-    minRating?: number;   
-    sort?: string;        
-    page?: number;
-    pageSize?: number;
-}
+  name?: string;
+  category?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  minRating?: number;
+  sort?: string;
+  page?: number;
+  pageSize?: number;
+};
 
 export enum OrderStatus {
-  PENDING = "PENDING",       
-  CONFIRMED = "CONFIRMED",  
+  PENDING = "PENDING",
+  CONFIRMED = "CONFIRMED",
   CANCELLED = "CANCELLED",
-  COMPLETED = "COMPLETED",   
+  COMPLETED = "COMPLETED",
 }
 
 export enum PaymentStatus {
@@ -70,12 +71,12 @@ export enum DeliveryStatus {
   RETURNED = "RETURNED",
 }
 
-export enum SortBy{
-CREATED_AT_ASC = "created_at_asc",
-CREATED_AT_DESC = "created_at_desc",
-PRICE_ASC = "price_asc",
-PRICE_DESC = "price_desc",
-RATING = "rating"
+export enum SortBy {
+  CREATED_AT_ASC = "created_at_asc",
+  CREATED_AT_DESC = "created_at_desc",
+  PRICE_ASC = "price_asc",
+  PRICE_DESC = "price_desc",
+  RATING = "rating",
 }
 
 export enum NotificationType {
@@ -88,34 +89,34 @@ export enum NotificationType {
 }
 
 export enum CommissionStatus {
-  PENDING   = "PENDING",   
-  CONFIRMED = "CONFIRMED",  
-  RELEASED  = "RELEASED",   
-  REFUNDED  = "REFUNDED",
+  PENDING = "PENDING",
+  CONFIRMED = "CONFIRMED",
+  RELEASED = "RELEASED",
+  REFUNDED = "REFUNDED",
 }
 
 export enum PayoutStatus {
-  PENDING    = "PENDING",
+  PENDING = "PENDING",
   PROCESSING = "PROCESSING",
-  COMPLETED  = "COMPLETED",
-  FAILED     = "FAILED",
+  COMPLETED = "COMPLETED",
+  FAILED = "FAILED",
 }
 
 export enum PayoutMethod {
-  KHALTI      = "KHALTI",
+  KHALTI = "KHALTI",
 }
 
 export enum TransactionStatus {
-  INITIATED  = "INITIATED",
-  PENDING    = "PENDING",
-  COMPLETED  = "COMPLETED",
-  FAILED     = "FAILED",
-  REFUNDED   = "REFUNDED",
+  INITIATED = "INITIATED",
+  PENDING = "PENDING",
+  COMPLETED = "COMPLETED",
+  FAILED = "FAILED",
+  REFUNDED = "REFUNDED",
 }
 
 export enum PaymentMethod {
   KHALTI = "KHALTI",
-  COD    = "COD",
+  COD = "COD",
 }
 
 export enum AdminRole {
@@ -124,8 +125,8 @@ export enum AdminRole {
 }
 
 export enum RefundStatus {
-  REQUESTED = "REQUESTED", 
-  APPROVED  = "APPROVED",    
-  COMPLETED = "COMPLETED",  
-  REJECTED  = "REJECTED",    
+  REQUESTED = "REQUESTED",
+  APPROVED = "APPROVED",
+  COMPLETED = "COMPLETED",
+  REJECTED = "REJECTED",
 }

@@ -9,6 +9,7 @@ import bodyParser from "koa-bodyparser";
 import { errorHandlerMiddleware } from "./middleware/error-hanlder.js";
 import cors from "@koa/cors";
 import { initSocket } from "./lib/socket.js";
+import { hashPassword } from "./lib/bcrypt.js";
 
 const app = new Koa();
 

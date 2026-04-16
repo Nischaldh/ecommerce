@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import { AdminRole, PayoutMethod } from "../types/global.types.js";
+import { AdminRole, CommissionStatus, OrderStatus, PayoutMethod, userRole, userStatus } from "../types/global.types.js";
 
 export const createAdminSchema = yup.object({
   name: yup.string().trim().required("Name is required"),
@@ -27,8 +27,6 @@ export const loginSchema = yup.object({
   password: yup.string().required("Password is required"),
 });
 
-
-
 export const createPayoutSchema = yup.object({
   sellerId:yup.string().uuid().required("Seller ID is required"),
   amount:yup.number().positive().required("Amount is required"),
@@ -37,7 +35,7 @@ export const createPayoutSchema = yup.object({
 });
 
 export const completePayoutSchema = yup.object({
-  payoutReference: yup.string().trim().required("Payout reference is required"),
+  payoutReference: yup.string().trim().optional(),
 });
 
 export const failPayoutSchema = yup.object({
@@ -49,9 +47,41 @@ export const approveSchema = yup.object({
 });
 
 export const completeSchema = yup.object({
-  refundReference: yup.string().trim().required("Refund reference is required"),
+  refundReference: yup.string().trim().optional(),
 });
 
 export const rejectSchema = yup.object({
   adminNotes: yup.string().trim().required("Reason for rejection is required"),
 });
+
+
+export const adminGetUsersSchema = yup.object({
+  role: yup.string().oneOf(Object.values(userRole)).optional(),
+  status: yup.string().oneOf(Object.values(userStatus)).optional(),
+  search: yup.string().trim().optional(),
+  page: yup.string().optional(),
+  pageSize: yup.string().optional(),
+})
+
+export const adminGetProductsSchema = yup.object({
+  search: yup.string().trim().optional(),
+  category: yup.string().trim().optional(),
+  sellerId: yup.string().uuid().optional(),
+  page: yup.string().optional(),
+  pageSize: yup.string().optional(),
+})
+
+export const adminGetOrdersSchema = yup.object({
+  status: yup.string().oneOf(Object.values(OrderStatus)).optional(),
+  paymentStatus: yup.string().trim().optional(),
+  search: yup.string().trim().optional(),
+  page: yup.string().optional(),
+  pageSize: yup.string().optional(),
+})
+
+export const adminGetCommissionsSchema = yup.object({
+  status: yup.string().oneOf(Object.values(CommissionStatus)).optional(),
+  sellerId: yup.string().uuid().optional(),
+  page: yup.string().optional(),
+  pageSize: yup.string().optional(),
+})

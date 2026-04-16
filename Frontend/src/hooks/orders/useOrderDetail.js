@@ -98,9 +98,7 @@ export const useOrderDetail = () => {
       dispatch(updateOrderStatus({ orderId: id, status: "CANCELLED" }));
 
       if (
-        order?.paymentStatus === "PAID" &&
-        order?.paymentMethod === "KHALTI"
-      ) {
+        order?.paymentStatus === "PAID"){
         const refundRes = await requestRefundService({
           orderId: id,
           reason: "Order cancelled by buyer before processing",

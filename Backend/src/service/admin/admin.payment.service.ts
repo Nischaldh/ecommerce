@@ -49,19 +49,22 @@ export const createPayoutService = async (
         "Seller payment info is not verified by admin yet."
       );
     }
+  
+        notes = notes
+      ? `${notes} | Khalti: ${paymentInfo.khaltiId}`
+      : `Khalti: ${paymentInfo.khaltiId} (${paymentInfo.khaltiName ?? "no name"})`;
 
-   
-    const transferRes = await initiateKhaltiTransfer({
-      amount,
-      receiverKhaltiId: paymentInfo.khaltiId,
-      remarks: `Payout for seller ${sellerId.slice(0, 8)}`,
-    });
+    // const transferRes = await initiateKhaltiTransfer({
+    //   amount,
+    //   receiverKhaltiId: paymentInfo.khaltiId,
+    //   remarks: `Payout for seller ${sellerId.slice(0, 8)}`,
+    // });
 
-    if (!transferRes.success) {
-      throw new BadRequestError(`Khalti transfer failed: ${transferRes.message}`);
-    }
+    // if (!transferRes.success) {
+    //   throw new BadRequestError(`Khalti transfer failed: ${transferRes.message}`);
+    // }
 
-    khaltiTransferId = transferRes.transfer_id;
+    // khaltiTransferId = transferRes.transfer_id;
   }
 
   return await AppDataSource.transaction(async (manager) => {
@@ -70,10 +73,8 @@ export const createPayoutService = async (
       admin_id: adminId,
       amount,
       method,
-      status: method === PayoutMethod.KHALTI
-        ? PayoutStatus.COMPLETED
-        : PayoutStatus.PROCESSING,
-      payoutReference: khaltiTransferId,
+      status: PayoutStatus.PROCESSING,
+      payoutReference: null,
       notes: notes ?? null,
     });
     const saved = await manager.save(Payout, payout);
@@ -93,7 +94,7 @@ export const createPayoutService = async (
 
 export const completePayoutService = async (
   payoutId: string,
-  payoutReference: string,
+  payoutReference?: string,
 ): Promise<{ payout: IPayoutResponse }> => {
   const payout = await payoutRepository.findOne({ where: { id: payoutId } });
   if (!payout) throw new NotFoundError("Payout not found");
@@ -103,7 +104,7 @@ export const completePayoutService = async (
   }
 
   payout.status = PayoutStatus.COMPLETED;
-  payout.payoutReference = payoutReference;
+  payout.payoutReference = payoutReference||null;
   const saved = await payoutRepository.save(payout);
 
   return { payout: mapPayout(saved) };

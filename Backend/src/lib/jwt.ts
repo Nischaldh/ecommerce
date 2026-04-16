@@ -17,7 +17,7 @@ export const generateToken = (user:JwtPayload)=>{
 
 export const verifyToken = (token:string)=>{
     try {
-        return jwt.verify(token, env.JWT_SECRET);
+        return jwt.verify(token, env.JWT_SECRET) as JwtPayload ;
     } catch (error) {
         return null;
     }

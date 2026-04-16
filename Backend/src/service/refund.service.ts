@@ -171,7 +171,7 @@ export const approveRefundService = async (
 
 export const completeRefundService = async (
   refundId: string,
-  refundReference: string,
+  refundReference?: string,
 ): Promise<{ refund: Refund }> => {
   const refund = await refundRepository.findOne({ where: { id: refundId } });
   if (!refund) throw new NotFoundError("Refund not found");
@@ -180,7 +180,7 @@ export const completeRefundService = async (
   }
 
   refund.status = RefundStatus.COMPLETED;
-  refund.refundReference = refundReference;
+  refund.refundReference = refundReference??null;
   const saved = await refundRepository.save(refund);
   return { refund: saved };
 };

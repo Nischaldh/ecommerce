@@ -51,8 +51,10 @@ export const errorHandlerMiddleware = async (
       }
     } 
     else {
+      console.error("Unexpected error:", error.message);
       ctx.status = 500;
       ctx.body = { error: "Something went wrong!" };
+
       return;
     }
   }
