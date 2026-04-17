@@ -9,22 +9,33 @@ import bodyParser from "koa-bodyparser";
 import { errorHandlerMiddleware } from "./middleware/error-hanlder.js";
 import cors from "@koa/cors";
 import { initSocket } from "./lib/socket.js";
-import { hashPassword } from "./lib/bcrypt.js";
 
 const app = new Koa();
 
 const PORT = env.PORT;
 
+const allowedOrigins = [env.FRONTEND_URL, env.ADMIN_URL];
+
 app.use(
   cors({
-    origin: env.FRONTEND_URL,
+    origin: (ctx) => {
+      const requestOrigin = ctx.request.header.origin;
+
+      if (!requestOrigin) return "*"; 
+
+      if (allowedOrigins.includes(requestOrigin)) {
+        return requestOrigin;
+      }
+
+      return ""; 
+    },
     credentials: true,
   }),
 );
 
 // middleware
-app.use(bodyParser());
 app.use(errorHandlerMiddleware);
+app.use(bodyParser());
 app.use(logger);
 
 // main router

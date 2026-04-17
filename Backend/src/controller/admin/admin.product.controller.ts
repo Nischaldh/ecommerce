@@ -3,7 +3,7 @@ import {
   adminGetProductsService,
   adminDeleteProductService,
 } from "../../service/admin/admin.product.service.js";
-import { adminGetProductsSchema } from "../../validations/admin.validation.js";
+import { adminGetProductsSchema, adminProductDeleteSchema } from "../../validations/admin.validation.js";
 
 export const getProducts = async (ctx: Context) => {
   const { search, category, sellerId, page, pageSize } =
@@ -22,7 +22,10 @@ export const getProducts = async (ctx: Context) => {
 };
 
 export const deleteProduct = async (ctx: Context) => {
-  await adminDeleteProductService(ctx.params.id);
+  const note = await adminProductDeleteSchema.validate(ctx.request.body, {
+    abortEarly: false,
+  });
+  await adminDeleteProductService({productId: ctx.params.id, note:note.note});
   ctx.status = 200;
   ctx.body = { success: true, message: "Product deleted" };
 };

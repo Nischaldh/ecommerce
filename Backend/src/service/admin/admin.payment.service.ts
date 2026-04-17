@@ -7,8 +7,9 @@ import { SellerPaymentInfo } from "../../entity/SellerPaymentInfo.js";
 import { BadRequestError, NotFoundError } from "../../lib/erros.js";
 import { initiateKhaltiTransfer } from "../../lib/khalti.js";
 import { mapPayout } from "../../lib/utlis.js";
-import { CommissionStatus, PayoutMethod, PayoutStatus } from "../../types/global.types.js";
+import { CommissionStatus, NotificationType, PayoutMethod, PayoutStatus } from "../../types/global.types.js";
 import { IPayoutResponse } from "../../types/payment.schema.js";
+import { createNotificationService } from "../notification.service.js";
 
 const payoutRepository = AppDataSource.getRepository(Payout);
 const balanceRepository = AppDataSource.getRepository(SellerBalance);
@@ -86,6 +87,12 @@ export const createPayoutService = async (
       (balance.totalPaidOut + amount).toFixed(2)
     );
     await manager.save(SellerBalance, balance);
+    await createNotificationService({
+      userId: sellerId,
+      type: NotificationType.PAYOUT_CREATED,
+      title:"PAYOUT CREATED",
+      message: `Your payout has been created and is being processed. Amount: Rs. ${amount}. Method: ${method}.`,
+    })
 
     return { payout: mapPayout(saved) };
   });
@@ -106,6 +113,12 @@ export const completePayoutService = async (
   payout.status = PayoutStatus.COMPLETED;
   payout.payoutReference = payoutReference||null;
   const saved = await payoutRepository.save(payout);
+  await createNotificationService({
+    userId: payout.seller_id,
+    type: NotificationType.PAYOUT_COMPLETED,
+    title:"PAYOUT COMPLETED",
+    message: `Your payout of Rs. ${payout.amount} has been completed. Method: ${payout.method}. Reference: ${payoutReference ?? "N/A"}`,
+  })
 
   return { payout: mapPayout(saved) };
 };
@@ -139,6 +152,12 @@ export const failPayoutService = async (
       );
       await manager.save(SellerBalance, balance);
     }
+    await createNotificationService({
+      userId: payout.seller_id,
+      type: NotificationType.PAYOUT_FAILED,
+      title:"PAYOUT FAILED",
+      message: `Your payout of Rs. ${payout.amount} has failed. Reason: ${notes}`,
+    })
 
     return { payout: mapPayout(payout) };
   });
@@ -180,8 +199,15 @@ export const confirmOrderCommissionsService = async (
   for (const c of commissions) {
     c.status = CommissionStatus.CONFIRMED;
   }
+  
 
   await AppDataSource.getRepository(Commission).save(commissions);
+  await createNotificationService({
+    userId: commissions[0]?.seller_id ?? "",
+    type: NotificationType.COMMISSION_CONFIRMED,
+    title:"COMMISSION CONFIRMED",
+    message: `Your commission for order ${orderId.slice(0, 8)} has been confirmed by admin. Amount: Rs. ${commissions.reduce((sum, c) => sum + c.commissionAmount, 0)}.`,
+  })
   return { confirmed: commissions.length };
 };
 
@@ -193,8 +219,15 @@ export const verifySellerPaymentInfoService = async (sellerId: string) => {
   
   info.isVerified = true;
   const saved = await repo.save(info);
+  await createNotificationService({
+    userId: sellerId,
+    type: NotificationType.PAYMENT_INFO_VERIFIED,
+    title:"PAYMENT INFO VERIFIED",
+    message: `Your payment info has been verified by admin. You can now receive payouts through your preferred method.`,
+  })
   return { paymentInfo: saved };
 };
+
 export const getSellerPaymentInfoService = async (sellerId: string) => {
   const info = await sellerPaymentInfoRepository.findOne({
     where: { seller_id: sellerId },

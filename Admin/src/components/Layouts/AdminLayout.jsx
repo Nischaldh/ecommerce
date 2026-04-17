@@ -1,8 +1,10 @@
 import { Outlet } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import AppSidebar from "./AppSidebar";
+import { useAdminSocket } from "@/hooks/useSocket";
 
 const AdminLayout = () => {
+  useAdminSocket(); 
   return (
     <SidebarProvider>
       <AppSidebar />

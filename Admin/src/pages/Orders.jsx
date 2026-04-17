@@ -19,8 +19,8 @@ const Orders = () => {
   const {
     orders, total, loading, page, totalPages,
     search, setSearch, statusFilter, setStatusFilter,
-    selectedOrder, setSelectedOrder, actionLoading, setPage,
-    openDetail, handleConfirmCommissions, handleReleaseCommissions,
+    selectedOrder, setSelectedOrder, setPage,
+    openDetail,
   } = useOrders();
 
   return (
@@ -58,10 +58,8 @@ const Orders = () => {
       ) : (
         <OrderTable
           orders={orders}
-          actionLoading={actionLoading}
           onView={openDetail}
-          onConfirm={handleConfirmCommissions}
-          onRelease={handleReleaseCommissions}
+      
         />
       )}
 

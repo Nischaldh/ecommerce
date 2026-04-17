@@ -12,40 +12,65 @@ const ProductTable = ({ products, deletingId, onDelete }) => {
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">Product</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">Seller</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">Price</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">Stock</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">Category</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">
+                  Product
+                </th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">
+                  Seller
+                </th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">
+                  Price
+                </th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">
+                  Stock
+                </th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500">
+                  Category
+                </th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {products.map((p) => (
-                <tr key={p.id} className="hover:bg-gray-50/50 transition-colors">
+                <tr
+                  key={p.id}
+                  className="hover:bg-gray-50/50 transition-colors"
+                >
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2.5">
                       <div className="size-10 rounded-lg overflow-hidden bg-gray-100 shrink-0">
-                        <img src={p.primaryImage} alt={p.name} className="w-full h-full object-cover" />
+                        <img
+                          src={p.primaryImage}
+                          alt={p.name}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900 truncate max-w-40">{p.name}</p>
+                        <p className="font-medium text-gray-900 truncate max-w-40">
+                          {p.name}
+                        </p>
                         <p className="text-xs text-gray-400">
                           {new Date(p.createdAt).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-600">{p.seller?.name ?? "—"}</td>
+                  <td className="px-4 py-3 text-sm text-gray-600">
+                    {p.seller?.name ?? "—"}
+                  </td>
                   <td className="px-4 py-3 font-medium text-gray-900">
                     Rs. {Number(p.price).toLocaleString("en-NP")}
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`text-sm font-medium ${
-                      p.stock === 0 ? "text-red-500"
-                      : p.stock < 10 ? "text-yellow-500"
-                      : "text-green-600"
-                    }`}>
+                    <span
+                      className={`text-sm font-medium ${
+                        p.stock === 0
+                          ? "text-red-500"
+                          : p.stock < 10
+                            ? "text-yellow-500"
+                            : "text-green-600"
+                      }`}
+                    >
                       {p.stock}
                     </span>
                   </td>
@@ -76,7 +101,10 @@ const ProductTable = ({ products, deletingId, onDelete }) => {
         message="This will permanently remove the product from the platform. This action cannot be undone."
         confirmLabel="Delete"
         danger
-        onConfirm={() => { onDelete(confirmId); setConfirmId(null); }}
+        onConfirm={(note) => {
+          onDelete(confirmId, note);
+          setConfirmId(null);
+        }}
         onClose={() => setConfirmId(null)}
       />
     </>

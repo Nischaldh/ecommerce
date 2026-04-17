@@ -27,9 +27,9 @@ export const useProducts = () => {
     fetch({ page, search: debouncedSearch || undefined });
   }, [page, debouncedSearch, fetch]);
 
-  const handleDelete = useCallback(async (id) => {
+  const handleDelete = useCallback(async (id, note) => {
     setDeletingId(id);
-    const res = await deleteProductService(id);
+    const res = await deleteProductService(id, note);
     if (res.success) {
       setProducts((prev) => prev.filter((p) => p.id !== id));
       setTotal((t) => t - 1);

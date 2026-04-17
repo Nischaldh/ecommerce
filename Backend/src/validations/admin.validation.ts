@@ -85,3 +85,7 @@ export const adminGetCommissionsSchema = yup.object({
   page: yup.string().optional(),
   pageSize: yup.string().optional(),
 })
+
+export const adminProductDeleteSchema = yup.object({
+  note: yup.string().trim().required("Reason for deletion is required"),
+})

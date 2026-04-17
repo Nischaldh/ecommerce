@@ -9,11 +9,14 @@ export const getProductsService = async (params) => {
   }
 };
 
-export const deleteProductService = async (id) => {
+export const deleteProductService = async (id, note) => {
   try {
-    const res = await api.delete(`/products/${id}`);
+    const res = await api.delete(`/products/${id}`,{
+      data: { note },
+    });
     return res.data;
   } catch (err) {
+      console.log("DELETE ERROR:", err.response?.data);
     return { success: false, message: err.response?.data?.message || "Failed to delete product" };
   }
 };

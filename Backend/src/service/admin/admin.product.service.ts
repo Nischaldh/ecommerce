@@ -1,6 +1,8 @@
 import { AppDataSource } from "../../config/data-source.js";
 import { Product } from "../../entity/Product.js";
 import { NotFoundError } from "../../lib/erros.js";
+import { NotificationType } from "../../types/global.types.js";
+import { createNotificationService } from "../notification.service.js";
 
 const productRepository = AppDataSource.getRepository(Product);
 
@@ -32,12 +34,18 @@ export const adminGetProductsService = async (query: {
   return { products, total };
 };
 
-export const adminDeleteProductService = async (productId: string) => {
+export const adminDeleteProductService = async ({productId, note}: { productId: string, note: string }) => {
   const product = await productRepository.findOne({
     where: { id: productId },
   });
   if (!product) throw new NotFoundError("Product not found");
   product.deleted = true;
   await productRepository.save(product);
+  await createNotificationService({
+    userId: product.seller_id,
+    type: NotificationType.PRODUCT_DELETED,
+    title:`Your product ${product.name} has been deleted`,
+    message: note,
+  })
   return { success: true };
 };

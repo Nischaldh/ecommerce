@@ -159,7 +159,6 @@ export const useCheckout = () => {
       toast.success("Order placed successfully! Pay on delivery.");
       navigate(`/orders/${orderId}`);
     } else if (paymentMethod === "KHALTI") {
-    
       setRedirectingToKhalti(true);
       emptyCart();
       toast.success("Redirecting to Khalti...");

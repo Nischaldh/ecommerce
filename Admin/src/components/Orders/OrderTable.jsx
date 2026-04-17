@@ -4,7 +4,7 @@ import {
   Tooltip, TooltipContent, TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-const OrderTable = ({ orders, actionLoading, onView, onConfirm, onRelease }) => (
+const OrderTable = ({ orders, onView }) => (
   <div className="bg-white border border-gray-100 rounded-xl overflow-hidden">
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
@@ -46,32 +46,6 @@ const OrderTable = ({ orders, actionLoading, onView, onConfirm, onRelease }) => 
                       </button>
                     </TooltipTrigger>
                     <TooltipContent>View order</TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button
-                        onClick={() => onConfirm(order.id)}
-                        disabled={actionLoading === order.id}
-                        className="p-1.5 rounded-lg hover:bg-blue-50 text-blue-400 hover:text-blue-600 transition-colors disabled:opacity-50"
-                      >
-                        <CheckCircle className="size-4" />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent>Confirm commissions</TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button
-                        onClick={() => onRelease(order.id)}
-                        disabled={actionLoading === order.id}
-                        className="p-1.5 rounded-lg hover:bg-green-50 text-green-400 hover:text-green-600 transition-colors disabled:opacity-50"
-                      >
-                        <Unlock className="size-4" />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent>Release commissions</TooltipContent>
                   </Tooltip>
                 </div>
               </td>
