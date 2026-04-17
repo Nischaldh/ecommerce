@@ -1,10 +1,11 @@
+import CommissionTable from "@/components/Commissions/CommissionTable";
+import PageHeader from "@/components/shared/PageHeader";
+import Pagination from "@/components/shared/Pagination";
+import TableSkeleton from "@/components/shared/TableSkeleton";
+import { useCommissions } from "@/hooks/useCommission";
 import { BarChart2 } from "lucide-react";
 
-import PageHeader from "../components/shared/PageHeader";
-import CommissionTable from "../components/Commissions/CommissionTable";
-import TableSkeleton from "../components/shared/TableSkeleton";
-import Pagination from "../components/shared/Pagination";
-import { useCommissions } from "@/hooks/useCommission";
+
 
 const Commissions = () => {
   const {

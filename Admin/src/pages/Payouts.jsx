@@ -1,11 +1,12 @@
+import CreatePayoutModal from "@/components/Payouts/CreatePayoutModal";
+import PayoutTable from "@/components/Payouts/PayoutTable";
+import SellerBalances from "@/components/Payouts/SellerBalances";
+import PageHeader from "@/components/shared/PageHeader";
+import Pagination from "@/components/shared/Pagination";
+import TableSkeleton from "@/components/shared/TableSkeleton";
+import { usePayouts } from "@/hooks/usePayouts";
 import { CreditCard, Plus } from "lucide-react";
-import { usePayouts } from "../hooks/usePayouts";
-import PageHeader from "../components/shared/PageHeader";
-import PayoutTable from "../components/Payouts/PayoutTable";
-import SellerBalances from "../components/Payouts/SellerBalances";
-import CreatePayoutModal from "../components/Payouts/CreatePayoutModal";
-import TableSkeleton from "../components/shared/TableSkeleton";
-import Pagination from "../components/shared/Pagination";
+
 
 const Payouts = () => {
   const {

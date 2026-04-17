@@ -1,12 +1,13 @@
+import DashboardSkeleton from "@/components/Dashboard/DashboardSkeleton";
+import PageHeader from "@/components/shared/PageHeader";
+import StatCard from "@/components/shared/StatCard";
+import { useDashboard } from "@/hooks/useDashboard";
 import {
   Users, Package, ShoppingBag, DollarSign,
   RotateCcw, CreditCard, TrendingUp, CheckCircle,
 } from "lucide-react";
 
-import StatCard from "../components/shared/StatCard";
-import PageHeader from "../components/shared/PageHeader";
-import DashboardSkeleton from "@/components/Dashboard/DashboardSkeleton";
-import { useDashboard } from "@/hooks/useDashboard";
+
 
 
 const Dashboard = () => {

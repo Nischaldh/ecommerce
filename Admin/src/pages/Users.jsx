@@ -1,12 +1,13 @@
 import { Users as UsersIcon } from "lucide-react";
 
-import PageHeader from "../components/shared/PageHeader";
-import SearchBar from "../components/shared/SearchBar";
-import UserTable from "../components/Users/UserTable";
-import TableSkeleton from "../components/shared/TableSkeleton";
-import Pagination from "../components/shared/Pagination";
+
 import { roleTabs } from "@/constants/constants";
 import { useUsers } from "@/hooks/useUser";
+import SearchBar from "@/components/shared/Searchbar";
+import PageHeader from "@/components/shared/PageHeader";
+import TableSkeleton from "@/components/shared/TableSkeleton";
+import UserTable from "@/components/Users/UserTable";
+import Pagination from "@/components/shared/Pagination";
 
 
 const Users = () => {

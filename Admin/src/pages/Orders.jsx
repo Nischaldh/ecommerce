@@ -1,12 +1,12 @@
+import OrderDetailModal from "@/components/Orders/OrderDetailModal";
+import OrderTable from "@/components/Orders/OrderTable";
+import PageHeader from "@/components/shared/PageHeader";
+import Pagination from "@/components/shared/Pagination";
+import SearchBar from "@/components/shared/Searchbar";
+import TableSkeleton from "@/components/shared/TableSkeleton";
+import { useOrders } from "@/hooks/useOrder";
 import { ShoppingBag } from "lucide-react";
 
-import PageHeader from "../components/shared/PageHeader";
-import SearchBar from "../components/shared/SearchBar";
-import OrderTable from "../components/Orders/OrderTable";
-import OrderDetailModal from "../components/Orders/OrderDetailModal";
-import TableSkeleton from "../components/shared/TableSkeleton";
-import Pagination from "../components/shared/Pagination";
-import { useOrders } from "@/hooks/useOrder";
 
 const statusTabs = [
   { label: "All", value: "" },

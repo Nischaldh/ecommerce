@@ -1,6 +1,7 @@
+import { useAdminLogin } from "@/hooks/auth/useLogin";
 import { Eye, EyeOff, ShieldCheck } from "lucide-react";
 import { useState } from "react";
-import { useAdminLogin } from "../hooks/auth/useLogin";
+
 
 
 const Login = () => {

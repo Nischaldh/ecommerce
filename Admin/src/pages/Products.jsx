@@ -1,11 +1,12 @@
+import ProductTable from "@/components/Products/ProductTable";
+import PageHeader from "@/components/shared/PageHeader";
+import Pagination from "@/components/shared/Pagination";
+import SearchBar from "@/components/shared/Searchbar";
+import TableSkeleton from "@/components/shared/TableSkeleton";
+import { useProducts } from "@/hooks/useProducts";
 import { Package } from "lucide-react";
 
-import PageHeader from "../components/shared/PageHeader";
-import SearchBar from "../components/shared/SearchBar";
-import ProductTable from "../components/Products/ProductTable";
-import TableSkeleton from "../components/shared/TableSkeleton";
-import Pagination from "../components/shared/Pagination";
-import { useProducts } from "@/hooks/useProducts";
+
 
 const Products = () => {
   const {

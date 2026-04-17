@@ -1,10 +1,11 @@
-import {  Plus, UserX } from "lucide-react";
-
-import PageHeader from "../components/shared/PageHeader";
-import StatusBadge from "../components/shared/StatusBadge";
-import ConfirmModal from "../components/shared/ConfirmModal";
-import { useState } from "react";
+import ConfirmModal from "@/components/shared/ConfirmModal";
+import PageHeader from "@/components/shared/PageHeader";
+import StatusBadge from "@/components/shared/StatusBadge";
 import { useAdmins } from "@/hooks/useAdmin";
+import {  Plus, UserX } from "lucide-react";
+import { useState } from "react";
+
+
 
 const FormInput = ({ label, error, ...props }) => (
   <div className="flex flex-col gap-1.5">
