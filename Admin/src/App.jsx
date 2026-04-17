@@ -8,10 +8,10 @@ import Payouts from "./pages/Payouts";
 import Refunds from "./pages/Refunds";
 import Admins from "./pages/Admins";
 import Login from "./pages/Login";
-import ProtectedRoute from "./components/routing/ProtectedRoute";
 import PublicRoute from "./components/Routing/PublicRoute";
 import AdminLayout from "./components/Layouts/AdminLayout";
 import { TooltipProvider } from "./components/ui/tooltip";
+import ProtectedRoute from "./components/Routing/ProtectedRoute";
 
 
 const App = () => {
