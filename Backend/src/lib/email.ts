@@ -6,6 +6,10 @@ export const transporter = nodemailer.createTransport({
   auth: { user: env.EMAIL, pass: env.EMAIL_PASSWORD },
 });
 
+transporter.verify()
+  .then(() => console.log("Gmail SMTP connected"))
+  .catch((err) => console.error(" Gmail SMTP connection failed:", err));
+
 export const sendEmail = async (to: string, subject: string, text: string) => {
   try {
     console.log("EMAIL PROVIDER: NODEMAILER GMAIL");
