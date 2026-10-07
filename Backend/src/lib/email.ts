@@ -2,26 +2,46 @@ import env from "./env.js";
 import nodemailer from "nodemailer";
 
 export const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: { user: env.EMAIL, pass: env.EMAIL_PASSWORD },
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+
+  auth: {
+    user: env.EMAIL,
+    pass: env.EMAIL_PASSWORD,
+  },
+
+  connectionTimeout: 10_000,
+  greetingTimeout: 10_000,
+  socketTimeout: 15_000,
 });
 
-transporter.verify()
+transporter
+  .verify()
   .then(() => console.log("Gmail SMTP connected"))
-  .catch((err) => console.error(" Gmail SMTP connection failed:", err));
+  .catch((err) =>
+    console.error("Gmail SMTP connection failed:", {
+      message: err.message,
+      code: err.code,
+      command: err.command,
+      response: err.response,
+    })
+  );
 
-export const sendEmail = async (to: string, subject: string, text: string) => {
+export const sendEmail = async (
+  to: string,
+  subject: string,
+  text: string
+) => {
   try {
     console.log("EMAIL PROVIDER: NODEMAILER GMAIL");
 
-    const msg = {
-      to,
+    const result = await transporter.sendMail({
       from: env.EMAIL,
+      to,
       subject,
       text,
-    };
-
-    const result = await transporter.sendMail(msg);
+    });
 
     console.log("NODEMAILER SUCCESS:", result.messageId);
 
