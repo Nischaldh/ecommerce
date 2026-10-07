@@ -209,9 +209,17 @@ Use *different* values for each — this keeps user and admin tokens completely 
 **`DUMMY_HASH`**  
 A bcrypt hash used internally to prevent timing attacks on non-existent accounts. The default value in `.env.example` is a hash of `123456` and is safe to use as-is. Do not use `123456` as any real password.
 
-**`EMAIL` and `BREVO_API_KEY`**  
-Used to send OTP and password reset emails through Brevo's HTTP API. No custom domain is required, but you do need a verified sender address.
 
+**`EMAIL` and `EMAIL_PASSWORD`**  
+(If you're using not using services and brevo or sendGrid)
+Your Gmail address and a Gmail **App Password** (not your regular Gmail password).  
+To generate an app password:
+1. Enable 2-Factor Authentication on your Google account at [myaccount.google.com/security](https://myaccount.google.com/security)
+2. Go to [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords)
+3. Create a new app password → copy the 16-character password
+4. Paste it as `EMAIL_PASSWORD` (spaces are fine, Gmail ignores them)
+
+(If you're using brevo)
 1. Sign up for free at [brevo.com](https://www.brevo.com) and complete the account setup
 2. Go to **Senders, Domains & Dedicated IPs → Senders → Add a sender**
 3. Enter a name and your email address, then enter the verification code Brevo sends to that inbox
@@ -219,8 +227,6 @@ Used to send OTP and password reset emails through Brevo's HTTP API. No custom d
 5. Copy the key immediately, because it is only shown once. Make sure it's an **API key**, not an SMTP key
 6. Set `BREVO_API_KEY` to that key
 7. Set `EMAIL` to the sender address you verified in step 3. It must match exactly
-
-> **Deliverability note:** If `EMAIL` is a free address like Gmail, some OTP emails may land in spam because Brevo cannot authenticate gmail.com.
 
 **`CLOUDINARY_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_SECRET_KEY`**  
 For product image uploads.
