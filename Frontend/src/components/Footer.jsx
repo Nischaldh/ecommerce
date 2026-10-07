@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
         {/* Brand */}
         <div className="flex flex-col gap-4">
-          <h2 className="text-xl font-bold">Ecommerce</h2>
+          <h2 className="text-xl font-bold">BazaarHub</h2>
           <p className="text-sm text-gray-500 max-w-xs">
             A multivendor marketplace where buyers and sellers come together.
           </p>
@@ -91,7 +91,7 @@ const Footer = () => {
 
       {/* Bottom bar */}
       <div className="border-t pt-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-400">
-        <p>© {new Date().getFullYear()} Ecommerce. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} BazaarHub. All rights reserved.</p>
       </div>
     </footer>
   );

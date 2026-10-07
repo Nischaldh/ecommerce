@@ -12,6 +12,7 @@ type envSchema = {
   CLOUD_API_SECRET: string;
   FRONTEND_URL: string;
   SENDGRID_API_KEY: string;
+  RESEND_API_KEY : string;
   KHALTI_SECRET_KEY: string;
   KHATLI_BASE_URL?: string;
   ADMIN_JWT_SECRET: string;
@@ -33,6 +34,7 @@ const env: envSchema = {
   CLOUD_API_SECRET: process.env.CLOUDINARY_SECRET_KEY || "",
   FRONTEND_URL: process.env.FRONTEND_URL || "",
   SENDGRID_API_KEY: process.env.SENDGRID_API_KEY || "",
+  RESEND_API_KEY: process.env.RESEND_API_KEY || "",
   KHALTI_SECRET_KEY: process.env.KHALTI_SECRET_KEY || "",
   KHATLI_BASE_URL: process.env.KHALTI_BASE_URL || "https://dev.khalti.com/api/v2",
   ADMIN_JWT_SECRET: process.env.ADMIN_JWT_SECRET || "@DMIN",

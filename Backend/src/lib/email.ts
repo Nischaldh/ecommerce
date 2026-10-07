@@ -1,8 +1,11 @@
-import sgMail from "@sendgrid/mail";
 import env from "./env.js";
 import nodemailer from "nodemailer";
 
-sgMail.setApiKey(env.SENDGRID_API_KEY);
+
+export const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: { user: env.EMAIL, pass: env.EMAIL_PASSWORD },
+});
 
 export const sendEmail = async (to: string, subject: string, text: string) => {
   try {
@@ -12,15 +15,13 @@ export const sendEmail = async (to: string, subject: string, text: string) => {
       subject,
       text,
     };
-    const result = await sgMail.send(msg);
+    const result = await transporter.sendMail(msg)
     return result;
   } catch (error: any) {
     console.error("SendGrid error:", error.response?.body || error.message);
-    throw new Error("Failed to send OTP email. Please try again.");
+    throw new Error(`Failed to send OTP email. Please try again. ${error.message}`);
   }
 };
 
-export const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: { user: env.EMAIL, pass: env.EMAIL_PASSWORD },
-});
+
+

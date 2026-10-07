@@ -27,6 +27,7 @@
     "nodemailer": "^8.0.2",
     "pg": "^8.20.0",
     "reflect-metadata": "^0.2.2",
+    "resend": "^6.32.1",
     "socket.io": "^4.8.3",
     "streamifier": "^0.1.1",
     "typeorm": "^0.3.28",

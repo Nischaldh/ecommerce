@@ -209,7 +209,7 @@ export const deleteProductService = async (
   sellerId: string,
 ): Promise<{ success: boolean }> => {
   const product = await getSellerProduct(productId, sellerId);
-
+// productRepository.softRemove(product);
   product.deleted = true;
   await productRepository.save(product);
 

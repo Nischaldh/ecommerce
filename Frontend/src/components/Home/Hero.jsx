@@ -9,8 +9,8 @@ const Hero = () => {
         {/* Text */}
         <div className="flex flex-col justify-center space-y-4 text-center md:text-left">
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-snug">
-            Welcome to my{" "}
-            <span className="text-orange-500">Ecommerce Website</span>
+            Welcome to {" "}
+            <span className="text-orange-500">BazaarHub</span>
           </h1>
 
           <p className="text-sm sm:text-base text-gray-600 max-w-md mx-auto md:mx-0">
